@@ -11,12 +11,13 @@ import AVFoundation
 
 class WaveformView: UIView {
   
-  var totalSamples = 0
-  var asset: AVURLAsset?
-  var assetTrack: AVAssetTrack?
-  var plotImageView: UIImageView!
+  private var totalSamples = 0
+  private var asset: AVURLAsset?
+  private var assetTrack: AVAssetTrack?
+  private var plotImageView: UIImageView!
+  private var cursor: UIView?
   
-  let noiseFloor = Float(-50.0)
+  private let noiseFloor = Float(-50.0)
   
   var audioURL: NSURL? {
     didSet {
@@ -45,7 +46,7 @@ class WaveformView: UIView {
       self.plotWithSamples(samples, maxSample: maxSample, imageHeight: heightPixels) { image in
         if self.plotImageView == nil {
           self.plotImageView = UIImageView()
-          self.addSubview(self.plotImageView)
+          self.insertSubview(self.plotImageView, atIndex: 0)
         }
         
         self.plotImageView.frame = self.bounds
@@ -56,7 +57,25 @@ class WaveformView: UIView {
   
   // MARK: Methods
   
-  func plotWithSamples(samples: NSData, maxSample: Float, imageHeight: Int, done: ((UIImage) -> ())?) {
+  func setCursorPositionWithPercent(percent: CGFloat) {
+    if self.cursor == nil {
+      self.cursor = UIView()
+      self.cursor?.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.8)
+      self.addSubview(self.cursor!)
+    }
+    
+    if self.cursor!.alpha == 0 {
+      self.cursor?.alpha = 1
+    }
+    
+    self.cursor?.frame = CGRect(x: self.bounds.width * percent, y: 0, width: 2, height: self.bounds.height)
+  }
+  
+  func removeCursor() {
+    self.cursor?.alpha = 0
+  }
+  
+  private func plotWithSamples(samples: NSData, maxSample: Float, imageHeight: Int, done: ((UIImage) -> ())?) {
     let s = UnsafePointer<Float>(samples.bytes)
     let sampleCount = samples.length / 4
     let imageSize = CGSize(width: sampleCount, height: imageHeight)
@@ -64,7 +83,7 @@ class WaveformView: UIView {
     let context = UIGraphicsGetCurrentContext()
     
     CGContextSetShouldAntialias(context, false)
-    CGContextSetAlpha(context, 0.5)
+    CGContextSetAlpha(context, 0.3)
     CGContextSetLineWidth(context, 1)
     CGContextSetStrokeColorWithColor(context, UIColor.blackColor().CGColor)
     
@@ -86,7 +105,7 @@ class WaveformView: UIView {
     done?(UIGraphicsGetImageFromCurrentImageContext())
   }
   
-  func downsampleAssetForWidth(widthInPixels: Int, done: ((NSData, Float) -> ())?) {
+  private func downsampleAssetForWidth(widthInPixels: Int, done: ((NSData, Float) -> ())?) {
     if let asset = self.asset, assetTrack = self.assetTrack {
       do {
         let reader = try AVAssetReader(asset: asset)
@@ -150,11 +169,11 @@ class WaveformView: UIView {
     }
   }
   
-  func decibel(amplitude: Float) -> Float {
+  private func decibel(amplitude: Float) -> Float {
     return 20.0 * log10(abs(amplitude)/32767.0)
   }
   
-  func minMaxOrValue(x: Float, min: Float, max: Float) -> Float {
+  private func minMaxOrValue(x: Float, min: Float, max: Float) -> Float {
     return x <= min ? min : (x >= max ? max : x)
   }
   

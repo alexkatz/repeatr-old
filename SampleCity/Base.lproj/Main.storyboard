@@ -20,18 +20,50 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UZH-qu-DJx" userLabel="PlayView" customClass="WaveformView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="360"/>
-                                <color key="backgroundColor" red="0.24052704510703243" green="1" blue="0.4707585968746178" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hold to play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nar-Eh-aDT">
+                                        <rect key="frame" x="8" y="436" width="143" height="36"/>
+                                        <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="30"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0011266044647501676" green="0.79259173927613946" blue="0.51384207202934817" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="nar-Eh-aDT" secondAttribute="bottom" constant="8" id="5ia-1q-grq"/>
+                                    <constraint firstItem="nar-Eh-aDT" firstAttribute="centerX" secondItem="UZH-qu-DJx" secondAttribute="centerX" id="8n8-uu-QjA"/>
+                                    <constraint firstItem="nar-Eh-aDT" firstAttribute="leading" secondItem="UZH-qu-DJx" secondAttribute="leading" constant="8" id="LB9-3F-ihO"/>
+                                    <constraint firstItem="nar-Eh-aDT" firstAttribute="centerY" secondItem="UZH-qu-DJx" secondAttribute="centerY" id="dfw-36-HEg"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="8n8-uu-QjA"/>
+                                        <exclude reference="dfw-36-HEg"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbk-pc-hIQ" userLabel="RecordView">
-                                <rect key="frame" x="0.0" y="360" width="600" height="240"/>
-                                <color key="backgroundColor" red="1" green="0.51021358944954132" blue="0.5856746941896025" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="0.0" y="480" width="600" height="120"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hold to record" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c0y-Lg-BrC">
+                                        <rect key="frame" x="214" y="42" width="173" height="36"/>
+                                        <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="30"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.6615805127345844" green="0.3389984823108903" blue="0.39343243464374789" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="c0y-Lg-BrC" firstAttribute="centerY" secondItem="wbk-pc-hIQ" secondAttribute="centerY" id="ETK-wR-9KF"/>
+                                    <constraint firstItem="c0y-Lg-BrC" firstAttribute="centerX" secondItem="wbk-pc-hIQ" secondAttribute="centerX" id="tQ6-ZL-nti"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="UZH-qu-DJx" secondAttribute="trailing" constant="-20" id="5JV-g9-aSy"/>
-                            <constraint firstItem="UZH-qu-DJx" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.6" id="AyA-05-sUh"/>
+                            <constraint firstItem="UZH-qu-DJx" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.8" id="AyA-05-sUh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="-20" id="P8Y-F8-r7f"/>
                             <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" id="QA6-MX-I5X"/>
                             <constraint firstItem="UZH-qu-DJx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="aNw-QU-pgA"/>
@@ -42,12 +74,13 @@
                     </view>
                     <connections>
                         <outlet property="playView" destination="UZH-qu-DJx" id="apA-G6-0cV"/>
+                        <outlet property="recordLabel" destination="c0y-Lg-BrC" id="Get-sf-ITa"/>
                         <outlet property="recordView" destination="wbk-pc-hIQ" id="pq4-e5-rbp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="152" y="223"/>
+            <point key="canvasLocation" x="-6" y="197"/>
         </scene>
     </scenes>
 </document>
