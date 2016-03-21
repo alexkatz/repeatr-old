@@ -8,20 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		3BE5DDAF1C9E314C00574670 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */; };
-		3BE5DDB11C9E314C00574670 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB01C9E314C00574670 /* ViewController.swift */; };
+		3BE5DDB11C9E314C00574670 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB01C9E314C00574670 /* HomeViewController.swift */; };
 		3BE5DDB41C9E314C00574670 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB21C9E314C00574670 /* Main.storyboard */; };
 		3BE5DDB61C9E314C00574670 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB51C9E314C00574670 /* Assets.xcassets */; };
 		3BE5DDB91C9E314C00574670 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB71C9E314C00574670 /* LaunchScreen.storyboard */; };
+		3BE5DDC31C9F575E00574670 /* WaveformView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDC21C9F575E00574670 /* WaveformView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3BE5DDAB1C9E314C00574670 /* SampleCity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleCity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3BE5DDB01C9E314C00574670 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3BE5DDB01C9E314C00574670 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		3BE5DDB31C9E314C00574670 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3BE5DDB51C9E314C00574670 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3BE5DDB81C9E314C00574670 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3BE5DDBA1C9E314C00574670 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3BE5DDC21C9F575E00574670 /* WaveformView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaveformView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +56,31 @@
 		3BE5DDAD1C9E314C00574670 /* SampleCity */ = {
 			isa = PBXGroup;
 			children = (
-				3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */,
-				3BE5DDB01C9E314C00574670 /* ViewController.swift */,
-				3BE5DDB21C9E314C00574670 /* Main.storyboard */,
+				3BE5DDC11C9F572A00574670 /* Views */,
+				3BE5DDC01C9F56D100574670 /* ViewControllers */,
 				3BE5DDB51C9E314C00574670 /* Assets.xcassets */,
+				3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */,
+				3BE5DDB21C9E314C00574670 /* Main.storyboard */,
 				3BE5DDB71C9E314C00574670 /* LaunchScreen.storyboard */,
 				3BE5DDBA1C9E314C00574670 /* Info.plist */,
 			);
 			path = SampleCity;
+			sourceTree = "<group>";
+		};
+		3BE5DDC01C9F56D100574670 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				3BE5DDB01C9E314C00574670 /* HomeViewController.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		3BE5DDC11C9F572A00574670 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3BE5DDC21C9F575E00574670 /* WaveformView.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +154,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BE5DDB11C9E314C00574670 /* ViewController.swift in Sources */,
+				3BE5DDB11C9E314C00574670 /* HomeViewController.swift in Sources */,
 				3BE5DDAF1C9E314C00574670 /* AppDelegate.swift in Sources */,
+				3BE5DDC31C9F575E00574670 /* WaveformView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
