@@ -76,10 +76,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           self.bookmarkBaseView.alpha = 1
         }
       } else {
-        self.plotImageView.alpha = 0
-        self.bookmarkBaseView.alpha = 0
-        self.asset = nil
-        self.assetTrack = nil
+        self.clear()
       }
     }
   }
@@ -138,16 +135,20 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    self.activeTouch = touches.maxElement { a, b -> Bool in
-      a.timestamp > b.timestamp
+    if touches.count == 1 {
+      self.activeTouch = touches.first
+    } else {
+      self.activeTouch = touches.maxElement { a, b -> Bool in
+        a.timestamp > b.timestamp
+      }
     }
     
     if let location = self.activeTouch?.locationInView(self) {
       if self.bookmarkBaseView.frame.contains(location) {
+        self.bookmarkBaseView.backgroundColor = Constants.blackColorDarkerTransparent
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
           self.uncommittedBookmarkView = bookmarkView
         } else {
-          self.bookmarkBaseView.backgroundColor = Constants.blackColorDarkerTransparent
           let bookmarkView = self.createBookmarkAtLocation(location)
           self.bookmarkViews.append(bookmarkView)
           self.uncommittedBookmarkView = bookmarkView
@@ -157,17 +158,11 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           let percent = Double(location.x / self.bounds.width)
           AudioService.sharedInstance.play(startPercent: percent)
         } else {
-          let currentX = location.x
-          var startPercent: Double?
-          var previousBookmarkPercent: CGFloat?
-          for bookmarkView in self.bookmarkViews {
-            if let percent = bookmarkView.percentX {
-              if let previousBookmarkPercent = previousBookmarkPercent {
-                
-              } else {
-                previousBookmarkPercent = percent
-              }
-            }
+          let currentPercent = CGFloat(location.x / self.bounds.width)
+          if let bookmarkView = self.bookmarkViews.filter({ $0.percentX < currentPercent }).last, startPercent = bookmarkView.percentX {
+            AudioService.sharedInstance.play(startPercent: Double(startPercent))
+          } else {
+            AudioService.sharedInstance.play(startPercent: 0)
           }
         }
       }
@@ -204,6 +199,11 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
             self.bookmarkViews.removeAtIndex(index)
           }
         }
+        
+        self.bookmarkViews.sortInPlace { a, b in
+          a.percentX < b.percentX
+        }
+        
         self.uncommittedBookmarkView = nil
       }
     }
@@ -238,6 +238,15 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   func clear() {
     self.plotImageView.alpha = 0
+    for bookmarkView in self.bookmarkViews {
+      bookmarkView.removeFromSuperview()
+    }
+    self.bookmarkViews.removeAll()
+    
+    self.plotImageView.alpha = 0
+    self.bookmarkBaseView.alpha = 0
+    self.asset = nil
+    self.assetTrack = nil
   }
   
   private func setup() {

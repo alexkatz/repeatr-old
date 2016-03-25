@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UZH-qu-DJx" userLabel="WaveformView" customClass="WaveformView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="511"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="510"/>
                                 <color key="backgroundColor" red="0.0011266044647501676" green="0.79259173927613946" blue="0.51384207202934817" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbk-pc-hIQ" userLabel="RecordView" customClass="RecordView" customModule="SampleCity" customModuleProvider="target">
@@ -33,7 +33,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" constant="1" id="3KU-rG-oh6"/>
+                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" constant="2" id="3KU-rG-oh6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="UZH-qu-DJx" secondAttribute="trailing" constant="-20" id="5JV-g9-aSy"/>
                             <constraint firstItem="UZH-qu-DJx" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.7" id="AyA-05-sUh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="-20" id="P8Y-F8-r7f"/>

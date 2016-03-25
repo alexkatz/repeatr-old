@@ -39,7 +39,7 @@ class BookmarkView: UIView {
   private func addCursorView() {
     self.cursorView = UIView()
     self.cursorView.translatesAutoresizingMaskIntoConstraints = false
-    self.cursorView.backgroundColor = Constants.blackColorDarkerTransparent
+    self.cursorView.backgroundColor = Constants.blackColorTransparent
     self.addSubview(self.cursorView)
     
     let horizontal = self.cursorView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor)

@@ -62,16 +62,13 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   }
   
   func play(startPercent percent: Double = 0) {
-    do {
-      self.audioPlayer?.stop()
-      try self.audioPlayer = AVAudioPlayer(contentsOfURL: self.audioRecorder.url)
-      self.audioPlayer.currentTime = self.audioPlayer.duration * percent
+    self.audioPlayer.currentTime = self.audioPlayer.duration * percent
+    if !self.audioPlayer.playing {
       self.audioPlayer.play()
-      if self.playbackTimer == nil {
-        self.playbackTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
-      }
-    } catch let error as NSError {
-      print("Error playing audio: \(error.localizedDescription)")
+    }
+    
+    if self.playbackTimer == nil {
+      self.playbackTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
     }
   }
   
@@ -83,7 +80,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       self.meterTimer = nil
       self.meterDelegate?.dbLevel = nil
     } else if self.audioPlayer != nil && self.audioPlayer.playing {
-      self.audioPlayer.stop()
+      self.audioPlayer.pause()
       self.playbackTimer?.invalidate()
       self.playbackTimer = nil
       self.playbackDelegate?.currentTime = nil
@@ -96,7 +93,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   
   func updateMeters() {
     self.audioRecorder.updateMeters()
-   self.meterDelegate?.dbLevel = self.audioRecorder.averagePowerForChannel(0)
+    self.meterDelegate?.dbLevel = self.audioRecorder.averagePowerForChannel(0)
   }
   
   // MARK: AVAudioRecorderDelegate
@@ -104,6 +101,12 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   func audioRecorderDidFinishRecording(recorder: AVAudioRecorder, successfully flag: Bool) {
     if flag {
       self.playbackDelegate?.audioURL = recorder.url
+      do {
+        try self.audioPlayer = AVAudioPlayer(contentsOfURL: self.audioRecorder.url)
+        self.audioPlayer.prepareToPlay()
+      } catch let error as NSError {
+        print("Error setting audio player URL: \(error.localizedDescription)")
+      }
     }
   }
   
