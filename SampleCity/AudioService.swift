@@ -29,17 +29,21 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
     let documentsDirectory = paths[0]
     
-    let audioFilePath = (documentsDirectory as NSString).stringByAppendingPathComponent("audio.m4a")
+    let audioFilePath = (documentsDirectory as NSString).stringByAppendingPathComponent("audio.caf")
     let audioFileURL = NSURL(fileURLWithPath: audioFilePath)
     let recordSettings = [
-      AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-      AVSampleRateKey: 44100.0,
-      AVNumberOfChannelsKey: 1 as NSNumber,
-      AVEncoderAudioQualityKey: AVAudioQuality.High.rawValue
+      AVFormatIDKey: Int(kAudioFormatLinearPCM),
+      AVSampleRateKey: NSNumber(float: 44100.0),
+      AVNumberOfChannelsKey: NSNumber(int: 1),
+      AVLinearPCMBitDepthKey: NSNumber(int: 16),
+      AVLinearPCMIsBigEndianKey: NSNumber(bool: false),
+      AVLinearPCMIsFloatKey: NSNumber(bool: false)
     ]
     
     do {
-      try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.DefaultToSpeaker)
+      let audioSession = AVAudioSession.sharedInstance()
+      try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.DefaultToSpeaker)
+      try audioSession.setPreferredIOBufferDuration(0.00001)
       try AVAudioSession.sharedInstance().setActive(true)
       self.audioRecorder = try AVAudioRecorder(URL: audioFileURL, settings: recordSettings)
       self.audioRecorder.delegate = self
@@ -63,9 +67,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   
   func play(startPercent percent: Double = 0) {
     self.audioPlayer.currentTime = self.audioPlayer.duration * percent
-    if !self.audioPlayer.playing {
-      self.audioPlayer.play()
-    }
+    self.audioPlayer.play()
     
     if self.playbackTimer == nil {
       self.playbackTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
@@ -79,7 +81,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       self.meterTimer?.invalidate()
       self.meterTimer = nil
       self.meterDelegate?.dbLevel = nil
-    } else if self.audioPlayer != nil && self.audioPlayer.playing {
+    } else if self.audioPlayer != nil {
       self.audioPlayer.pause()
       self.playbackTimer?.invalidate()
       self.playbackTimer = nil

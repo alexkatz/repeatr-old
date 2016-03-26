@@ -187,9 +187,14 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       AudioService.sharedInstance.stop()
       self.activeTouch = nil
       if self.bookmarkBaseView.backgroundColor != Constants.blackColorTransparent {
-        UIView.animateWithDuration(Constants.defaultAnimationDuration) {
-          self.bookmarkBaseView.backgroundColor = Constants.blackColorTransparent
-        }
+        UIView.animateWithDuration(
+          Constants.defaultAnimationDuration,
+          delay: 0,
+          options: [.AllowUserInteraction, .BeginFromCurrentState],
+          animations: {
+            self.bookmarkBaseView.backgroundColor = Constants.blackColorTransparent
+          },
+          completion: nil)
       }
       
       if let uncommittedBookmarkView = self.uncommittedBookmarkView {
