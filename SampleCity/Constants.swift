@@ -15,4 +15,5 @@ class Constants {
   static let blackColorDarkerTransparent = UIColor.blackColor().colorWithAlphaComponent(0.5)
   static let recordButtonHeight = 88
   static let defaultAnimationDuration = 0.40
+  static let bookmarkViewWidth = CGFloat(44)
 }

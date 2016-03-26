@@ -43,7 +43,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     do {
       let audioSession = AVAudioSession.sharedInstance()
       try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.DefaultToSpeaker)
-      try audioSession.setPreferredIOBufferDuration(0.00001)
+      try audioSession.setPreferredIOBufferDuration(0.0006)
       try AVAudioSession.sharedInstance().setActive(true)
       self.audioRecorder = try AVAudioRecorder(URL: audioFileURL, settings: recordSettings)
       self.audioRecorder.delegate = self

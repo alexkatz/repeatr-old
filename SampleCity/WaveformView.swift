@@ -122,14 +122,12 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   override func layoutSubviews() {
     super.layoutSubviews()
+    self.drawWaveform()
     
-    let widthPixels = Int(self.frame.width * UIScreen.mainScreen().scale)
-    let heightPixels = Int(self.frame.height * UIScreen.mainScreen().scale)
-    
-    self.downsampleAssetForWidth(widthPixels) { samples, maxSample in
-      self.plotWithSamples(samples, maxSample: maxSample, imageHeight: heightPixels) { image in
-        self.plotImageView.frame = self.bounds
-        self.plotImageView.image = image
+    for bookmarkView in self.bookmarkViews {
+      bookmarkView.frame = CGRect(x: 0, y: 0, width: Constants.bookmarkViewWidth, height: self.bounds.height)
+      if let percentX = bookmarkView.percentX {
+        bookmarkView.center = CGPoint(x: self.bounds.width * percentX, y: bookmarkView.center.y)
       }
     }
   }
@@ -217,7 +215,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   // MARK: Methods
   
   func createBookmarkAtLocation(location: CGPoint) -> BookmarkView {
-    let bookmarkView = BookmarkView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: 44, height: self.bounds.height)))
+    let bookmarkView = BookmarkView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: Constants.bookmarkViewWidth, height: self.bounds.height)))
     bookmarkView.center = CGPoint(x: location.x, y: bookmarkView.center.y)
     self.addSubview(bookmarkView)
     return bookmarkView
@@ -258,6 +256,18 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     self.multipleTouchEnabled = true
   }
   
+  private func drawWaveform() {
+    let widthPixels = Int(self.frame.width * UIScreen.mainScreen().scale)
+    let heightPixels = Int(self.frame.height * UIScreen.mainScreen().scale)
+    
+    self.downsampleAssetForWidth(widthPixels) { samples, maxSample in
+      self.plotWithSamples(samples, maxSample: maxSample, imageHeight: heightPixels) { image in
+        self.plotImageView.frame = self.bounds
+        self.plotImageView.image = image
+      }
+    }
+  }
+  
   private func plotWithSamples(samples: NSData, maxSample: Float, imageHeight: Int, done: ((UIImage) -> ())?) {
     let s = UnsafePointer<Float>(samples.bytes)
     let sampleCount = samples.length / 4
@@ -289,7 +299,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   private func downsampleAssetForWidth(widthInPixels: Int, done: ((NSData, Float) -> ())?) {
-    if let asset = self.asset, assetTrack = self.assetTrack {
+    if let asset = self.asset, assetTrack = self.assetTrack where self.totalSamples > 0 && widthInPixels > 0 {
       do {
         let reader = try AVAssetReader(asset: asset)
         reader.timeRange = CMTimeRangeMake(CMTime(seconds: 0, preferredTimescale: asset.duration.timescale), CMTime(seconds: Double(self.totalSamples), preferredTimescale: asset.duration.timescale))

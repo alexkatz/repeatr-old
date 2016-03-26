@@ -11,20 +11,18 @@ import UIKit
 class BookmarkView: UIView {
   
   var cursorView: UIView!
-  
-  var percentX: CGFloat? {
-    get {
-      if let superview = self.superview {
-        return self.center.x / superview.bounds.width
-      }
-      
-      return nil
-    }
-  }
+  var percentX: CGFloat?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.addCursorView()
+  }
+  
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    if let superview = self.superview {
+      self.percentX = self.center.x / superview.bounds.width
+    }
   }
   
   convenience init() {
