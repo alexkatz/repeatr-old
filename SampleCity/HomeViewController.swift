@@ -13,6 +13,7 @@ class HomeViewController: UIViewController {
 
   @IBOutlet weak var recordView: RecordView!
   @IBOutlet weak var waveformView: WaveformView!
+  @IBOutlet weak var loopRecordView: LoopRecordView!
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -24,6 +25,7 @@ class HomeViewController: UIViewController {
     AudioService.sharedInstance.recordDelegate = self.recordView
     AudioService.sharedInstance.playbackDelegate = self.waveformView
     AudioService.sharedInstance.meterDelegate = self.waveformView
+    AudioService.sharedInstance.loopRecordDelegate = self.loopRecordView
   }
 
   override func prefersStatusBarHidden() -> Bool {

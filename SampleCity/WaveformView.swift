@@ -11,6 +11,8 @@ import AVFoundation
 
 class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
+  private let audioService = AudioService.sharedInstance
+  
   private var totalSamples = 0
   private var asset: AVURLAsset?
   private var assetTrack: AVAssetTrack?
@@ -46,7 +48,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   private lazy var bookmarkBaseView: UIView = { [unowned self] in
     let bookmarkBaseView = UIView()
-    bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.2)
+    bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
     bookmarkBaseView.translatesAutoresizingMaskIntoConstraints = false
     self.addSubview(bookmarkBaseView)
     
@@ -97,7 +99,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     didSet {
       if let dbLevel = self.dbLevel {
         self.meterView.alpha = 0.3
-        let noiseFloor = 0 - AudioService.sharedInstance.noiseFloor
+        let noiseFloor = 0 - self.audioService.noiseFloor
         let heightPercent = CGFloat((noiseFloor - abs(dbLevel)) / noiseFloor)
         self.meterHeightConstraint?.constant = heightPercent > 0 ? (self.bounds.height / 2) * heightPercent : 0
       } else {
@@ -125,9 +127,12 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     self.drawWaveform()
     
     for bookmarkView in self.bookmarkViews {
-      bookmarkView.frame = CGRect(x: 0, y: 0, width: Constants.bookmarkViewWidth, height: self.bounds.height)
-      if let percentX = bookmarkView.percentX {
-        bookmarkView.center = CGPoint(x: self.bounds.width * percentX, y: bookmarkView.center.y)
+      if let percentX = bookmarkView.percentX where bookmarkView.bounds.height != self.bounds.height {
+        bookmarkView.frame = CGRect(
+          x: (self.bounds.width * percentX) - (Constants.bookmarkViewWidth / 2),
+          y: 0,
+          width: Constants.bookmarkViewWidth,
+          height: self.bounds.height)
       }
     }
   }
@@ -143,24 +148,23 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     
     if let location = self.activeTouch?.locationInView(self) {
       if self.bookmarkBaseView.frame.contains(location) {
-        self.bookmarkBaseView.backgroundColor = Constants.blackColorDarkerTransparent
+        self.bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.2)
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
           self.uncommittedBookmarkView = bookmarkView
         } else {
           let bookmarkView = self.createBookmarkAtLocation(location)
-          self.bookmarkViews.append(bookmarkView)
           self.uncommittedBookmarkView = bookmarkView
         }
       } else {
         if self.bookmarkViews.count == 0 {
           let percent = Double(location.x / self.bounds.width)
-          AudioService.sharedInstance.play(startPercent: percent)
+          self.audioService.play(startPercent: percent)
         } else {
           let currentPercent = CGFloat(location.x / self.bounds.width)
           if let bookmarkView = self.bookmarkViews.filter({ $0.percentX < currentPercent }).last, startPercent = bookmarkView.percentX {
-            AudioService.sharedInstance.play(startPercent: Double(startPercent))
+            self.audioService.play(startPercent: Double(startPercent))
           } else {
-            AudioService.sharedInstance.play(startPercent: 0)
+            self.audioService.play(startPercent: 0)
           }
         }
       }
@@ -168,6 +172,10 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    if touches.filter({ $0 == self.activeTouch }).count == 0 {
+      return
+    }
+    
     if let uncommittedBookmarkView = self.uncommittedBookmarkView {
       if let location = touches.first?.locationInView(self) {
         uncommittedBookmarkView.center = CGPoint(x: location.x, y: uncommittedBookmarkView.center.y)
@@ -175,14 +183,14 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           uncommittedBookmarkView.alpha = location.y > self.bounds.height ? 0.2 : 1
         }
       }
-    } else {
-      
     }
   }
   
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if self.activeTouch != nil && touches.contains(self.activeTouch!) {
-      AudioService.sharedInstance.stop()
+      if !self.audioService.isPlayingLoop {
+        self.audioService.stop()
+      }
       self.activeTouch = nil
       if self.bookmarkBaseView.backgroundColor != Constants.blackColorTransparent {
         UIView.animateWithDuration(
@@ -190,7 +198,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           delay: 0,
           options: [.AllowUserInteraction, .BeginFromCurrentState],
           animations: {
-            self.bookmarkBaseView.backgroundColor = Constants.blackColorTransparent
+            self.bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
           },
           completion: nil)
       }
@@ -215,8 +223,13 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   // MARK: Methods
   
   func createBookmarkAtLocation(location: CGPoint) -> BookmarkView {
-    let bookmarkView = BookmarkView(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: Constants.bookmarkViewWidth, height: self.bounds.height)))
-    bookmarkView.center = CGPoint(x: location.x, y: bookmarkView.center.y)
+    let bookmarkView = BookmarkView(
+      frame: CGRect(
+        x: location.x - (Constants.bookmarkViewWidth / 2),
+        y: 0,
+        width: Constants.bookmarkViewWidth,
+        height: self.bounds.height))
+    self.bookmarkViews.append(bookmarkView)
     self.addSubview(bookmarkView)
     return bookmarkView
   }
@@ -280,12 +293,12 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     CGContextSetLineWidth(context, 1)
     CGContextSetStrokeColorWithColor(context, Constants.blackColorTransparent.CGColor)
     
-    let sampleAdjustmentFactor = Float(imageHeight) / (maxSample - AudioService.sharedInstance.noiseFloor) / 2
+    let sampleAdjustmentFactor = Float(imageHeight) / (maxSample - self.audioService.noiseFloor) / 2
     let halfImageHeight = Float(imageHeight) / 2
     
     for i in 0..<sampleCount {
       let sample: Float = s[i]
-      var pixels = (sample - AudioService.sharedInstance.noiseFloor) * sampleAdjustmentFactor
+      var pixels = (sample - self.audioService.noiseFloor) * sampleAdjustmentFactor
       if pixels == 0 {
         pixels = 1
       }
@@ -315,7 +328,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         reader.addOutput(output)
         
         let bytesPerInputSample = 2
-        var sampleMax = AudioService.sharedInstance.noiseFloor
+        var sampleMax = self.audioService.noiseFloor
         var tally = Float(0)
         var tallyCount = Float(0)
         let downsampleFactor = Int(self.totalSamples / widthInPixels)
@@ -335,7 +348,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
             
             for i in 0..<sampleCount {
               let rawData = Float(samples[i])
-              var sample = self.minMaxOrValue(self.decibel(rawData), min: Float(AudioService.sharedInstance.noiseFloor), max: 0)
+              var sample = self.minMaxOrValue(self.decibel(rawData), min: Float(self.audioService.noiseFloor), max: 0)
               tally += sample
               tallyCount += 1
               

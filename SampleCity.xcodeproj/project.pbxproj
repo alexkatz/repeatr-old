@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */; };
+		3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */; };
 		3B8148921CA32B2100E5D91D /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8148911CA32B2100E5D91D /* BookmarkView.swift */; };
 		3B98F68D1CA032B4000DB79E /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98F68C1CA032B4000DB79E /* AudioService.swift */; };
 		3B98F6901CA03E62000DB79E /* PlaybackDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98F68F1CA03E62000DB79E /* PlaybackDelegate.swift */; };
@@ -23,6 +25,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordDelegate.swift; sourceTree = "<group>"; };
+		3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordView.swift; sourceTree = "<group>"; };
 		3B8148911CA32B2100E5D91D /* BookmarkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		3B98F68C1CA032B4000DB79E /* AudioService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
 		3B98F68F1CA03E62000DB79E /* PlaybackDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +69,7 @@
 				3B98F68F1CA03E62000DB79E /* PlaybackDelegate.swift */,
 				3B98F6921CA042B9000DB79E /* RecordDelegate.swift */,
 				3B98F6941CA042FF000DB79E /* MeterDelegate.swift */,
+				3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */,
 			);
 			name = Delegates;
 			sourceTree = "<group>";
@@ -124,6 +129,7 @@
 				3BE5DDC21C9F575E00574670 /* WaveformView.swift */,
 				3B98F6961CA046E9000DB79E /* RecordView.swift */,
 				3B8148911CA32B2100E5D91D /* BookmarkView.swift */,
+				3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -209,6 +215,8 @@
 				3BE5DDC31C9F575E00574670 /* WaveformView.swift in Sources */,
 				3B98F6931CA042B9000DB79E /* RecordDelegate.swift in Sources */,
 				3B98F69A1CA0474B000DB79E /* Constants.swift in Sources */,
+				3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */,
+				3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

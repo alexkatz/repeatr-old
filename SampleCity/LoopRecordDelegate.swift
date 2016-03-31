@@ -1,14 +1,14 @@
 //
-//  RecordDelegate.swift
+//  LoopRecordDelegate.swift
 //  SampleCity
 //
-//  Created by Alexander Katz on 3/21/16.
+//  Created by Alexander Katz on 3/29/16.
 //  Copyright © 2016 Alexander Katz. All rights reserved.
 //
 
 import Foundation
 
-protocol RecordDelegate: class {
-  var isRecording: Bool { get set }
+protocol LoopRecordDelegate: class {
   var isLoopRecording: Bool { get set }
+  var isArmed: Bool { get set }
 }

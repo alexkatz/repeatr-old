@@ -21,43 +21,54 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UZH-qu-DJx" userLabel="WaveformView" customClass="WaveformView" customModule="SampleCity" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="510"/>
-                                <color key="backgroundColor" red="0.0011266044647501676" green="0.79259173927613946" blue="0.51384207202934817" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.0" green="0.92156862745098034" blue="0.59215686274509804" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbk-pc-hIQ" userLabel="RecordView" customClass="RecordView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="512" width="600" height="88"/>
-                                <color key="backgroundColor" red="0.6615805127345844" green="0.3389984823108903" blue="0.39343243464374789" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="0.0" y="512" width="388" height="88"/>
+                                <color key="backgroundColor" red="0.8784313725490196" green="0.45098039215686275" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="88" id="qeS-Qg-Ydi"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OSO-1Z-YHT" userLabel="LoopRecordView" customClass="LoopRecordView" customModule="SampleCity" customModuleProvider="target">
+                                <rect key="frame" x="390" y="512" width="210" height="88"/>
+                                <color key="backgroundColor" red="0.8784313725490196" green="0.45098039215686275" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.35" id="1cT-nT-wS9"/>
                             <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" constant="2" id="3KU-rG-oh6"/>
                             <constraint firstAttribute="trailingMargin" secondItem="UZH-qu-DJx" secondAttribute="trailing" constant="-20" id="5JV-g9-aSy"/>
                             <constraint firstItem="UZH-qu-DJx" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.7" id="AyA-05-sUh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="-20" id="P8Y-F8-r7f"/>
                             <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" id="QA6-MX-I5X"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="2" id="VBX-lt-qOo"/>
                             <constraint firstItem="UZH-qu-DJx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="aNw-QU-pgA"/>
                             <constraint firstItem="wbk-pc-hIQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="c1Y-H7-Xa6"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" constant="2" id="gCe-BM-eMT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="OSO-1Z-YHT" secondAttribute="trailing" constant="-20" id="mGK-oA-F9Q"/>
                             <constraint firstItem="UZH-qu-DJx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="mNP-bT-7Kz"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="q10-jm-sg1"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="OSO-1Z-YHT" secondAttribute="bottom" id="sGK-PD-Ouo"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="AyA-05-sUh"/>
+                                <exclude reference="P8Y-F8-r7f"/>
                                 <exclude reference="QA6-MX-I5X"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="loopRecordView" destination="OSO-1Z-YHT" id="3CE-Hh-R1P"/>
                         <outlet property="recordView" destination="wbk-pc-hIQ" id="pq4-e5-rbp"/>
                         <outlet property="waveformView" destination="UZH-qu-DJx" id="fEh-xp-jdC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-794" y="-69"/>
+            <point key="canvasLocation" x="-998" y="-178"/>
         </scene>
     </scenes>
 </document>
