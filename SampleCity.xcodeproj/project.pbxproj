@@ -16,6 +16,8 @@
 		3B98F6951CA042FF000DB79E /* MeterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98F6941CA042FF000DB79E /* MeterDelegate.swift */; };
 		3B98F6971CA046E9000DB79E /* RecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98F6961CA046E9000DB79E /* RecordView.swift */; };
 		3B98F69A1CA0474B000DB79E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98F6991CA0474B000DB79E /* Constants.swift */; };
+		3BAF48101CADAE71009ADA6E /* LoopPlaybackDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAF480F1CADAE71009ADA6E /* LoopPlaybackDelegate.swift */; };
+		3BAF48121CADB62E009ADA6E /* LoopPlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAF48111CADB62E009ADA6E /* LoopPlaybackView.swift */; };
 		3BE5DDAF1C9E314C00574670 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */; };
 		3BE5DDB11C9E314C00574670 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB01C9E314C00574670 /* HomeViewController.swift */; };
 		3BE5DDB41C9E314C00574670 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB21C9E314C00574670 /* Main.storyboard */; };
@@ -34,6 +36,8 @@
 		3B98F6941CA042FF000DB79E /* MeterDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeterDelegate.swift; sourceTree = "<group>"; };
 		3B98F6961CA046E9000DB79E /* RecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordView.swift; sourceTree = "<group>"; };
 		3B98F6991CA0474B000DB79E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		3BAF480F1CADAE71009ADA6E /* LoopPlaybackDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPlaybackDelegate.swift; sourceTree = "<group>"; };
+		3BAF48111CADB62E009ADA6E /* LoopPlaybackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPlaybackView.swift; sourceTree = "<group>"; };
 		3BE5DDAB1C9E314C00574670 /* SampleCity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleCity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BE5DDB01C9E314C00574670 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -70,6 +74,7 @@
 				3B98F6921CA042B9000DB79E /* RecordDelegate.swift */,
 				3B98F6941CA042FF000DB79E /* MeterDelegate.swift */,
 				3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */,
+				3BAF480F1CADAE71009ADA6E /* LoopPlaybackDelegate.swift */,
 			);
 			name = Delegates;
 			sourceTree = "<group>";
@@ -130,6 +135,7 @@
 				3B98F6961CA046E9000DB79E /* RecordView.swift */,
 				3B8148911CA32B2100E5D91D /* BookmarkView.swift */,
 				3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */,
+				3BAF48111CADB62E009ADA6E /* LoopPlaybackView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -210,6 +216,7 @@
 				3BE5DDAF1C9E314C00574670 /* AppDelegate.swift in Sources */,
 				3B98F6951CA042FF000DB79E /* MeterDelegate.swift in Sources */,
 				3B98F6901CA03E62000DB79E /* PlaybackDelegate.swift in Sources */,
+				3BAF48101CADAE71009ADA6E /* LoopPlaybackDelegate.swift in Sources */,
 				3B98F6971CA046E9000DB79E /* RecordView.swift in Sources */,
 				3B8148921CA32B2100E5D91D /* BookmarkView.swift in Sources */,
 				3BE5DDC31C9F575E00574670 /* WaveformView.swift in Sources */,
@@ -217,6 +224,7 @@
 				3B98F69A1CA0474B000DB79E /* Constants.swift in Sources */,
 				3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */,
 				3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */,
+				3BAF48121CADB62E009ADA6E /* LoopPlaybackView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

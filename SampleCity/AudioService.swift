@@ -16,9 +16,11 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     let audioTime: Double?
   }
   
+  private let playbackQueue = NSOperationQueue()
+  
   private var audioPlayer: AVAudioPlayer?
   private var audioRecorder: AVAudioRecorder!
-  private var playbackTimer: NSTimer?
+  private var cursorTimer: NSTimer?
   private var meterTimer: NSTimer?
   private var loopPoints = [LoopPoint]()
   private var loopStartTime: UInt64!
@@ -42,12 +44,23 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
-  var isPlayingLoop = false
+  var isPlayingLoop = false {
+    didSet {
+      self.loopPlaybackDelegate?.isPlayingLoop = self.isPlayingLoop
+      if self.isPlayingLoop {
+      } else {
+        self.audioPlayer?.pause()
+      }
+    }
+  }
   
-  weak var playbackDelegate: PlaybackDelegate?
+  var pauseCondition = NSCondition()
+  
   weak var recordDelegate: RecordDelegate?
-  weak var meterDelegate: MeterDelegate?
+  weak var playbackDelegate: PlaybackDelegate?
   weak var loopRecordDelegate: LoopRecordDelegate?
+  weak var loopPlaybackDelegate: LoopPlaybackDelegate?
+  weak var meterDelegate: MeterDelegate?
   
   let noiseFloor = Float(-50.0)
   
@@ -66,6 +79,8 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       AVLinearPCMIsBigEndianKey: NSNumber(bool: false),
       AVLinearPCMIsFloatKey: NSNumber(bool: false)
     ]
+    
+    self.playbackQueue.maxConcurrentOperationCount = 1
     
     do {
       let audioSession = AVAudioSession.sharedInstance()
@@ -108,11 +123,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       
       audioPlayer.currentTime = audioTime
       audioPlayer.play()
-      if self.playbackTimer == nil {
-        let interval = 0.001
-        self.playbackTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
-        self.playbackTimer?.tolerance = interval * 0.10
-      }
+      self.startCursorTimer()
     }
   }
   
@@ -131,8 +142,8 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       }
       
       self.audioPlayer?.pause()
-      self.playbackTimer?.invalidate()
-      self.playbackTimer = nil
+      self.cursorTimer?.invalidate()
+      self.cursorTimer = nil
       self.playbackDelegate?.currentTime = nil
     }
   }
@@ -153,32 +164,8 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   
   func startLoop() {
     self.isPlayingLoop = true
-    let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
-    dispatch_async(queue) {
-      //      NSThread.setThreadPriority(1)
-      //      repeat {
-      //        for (i, loopPoint) in self.loopPoints.enumerate() {
-      //          var elapsed: UInt64 = 0
-      //          if let audioTime = loopPoint.audioTime { // play loopPoint
-      //            elapsed = self.loopPoints[i + 1].intervalFromStart - loopPoint.intervalFromStart
-      //            self.audioPlayer?.currentTime = audioTime
-      //            self.audioPlayer?.play()
-      //          } else { // stop loop point, should always pause play initiated by previous play loopPoint
-      //            self.audioPlayer?.pause()
-      //            if i < self.loopPoints.count - 1 {
-      //              elapsed = self.loopPoints[i + 1].intervalFromStart - loopPoint.intervalFromStart
-      //            }
-      //          }
-      //          if i < self.loopPoints.count - 1 {
-      //            var info = mach_timebase_info(numer: 0, denom: 0)
-      //            mach_timebase_info(&info)
-      //            let base = UInt64(info.numer / info.denom)
-      //            let seconds = Double(elapsed * base) / 1_000_000_000
-      //            NSThread.sleepForTimeInterval(seconds)
-      //          }
-      //        }
-      //      } while (false)
-      
+    self.startCursorTimer()
+    self.playbackQueue.addOperationWithBlock {
       var i = 0
       var startTime = mach_absolute_time()
       repeat {
@@ -198,16 +185,12 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
           i = 0
           startTime = mach_absolute_time()
         }
-      } while (true)
+      } while (self.isPlayingLoop)
     }
   }
   
-  func loop() {
-    
-  }
-  
-  func stopLoop() {
-    self.loopPoints.removeAll()
+  func pauseLoop() {
+    self.isPlayingLoop = false
   }
   
   func updateCurrentTime() {
@@ -219,6 +202,14 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   func updateMeters() {
     self.audioRecorder.updateMeters()
     self.meterDelegate?.dbLevel = self.audioRecorder.averagePowerForChannel(0)
+  }
+  
+  private func startCursorTimer() {
+    if self.cursorTimer == nil {
+      let interval = 0.001
+      self.cursorTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
+      self.cursorTimer?.tolerance = interval * 0.10
+    }
   }
   
   // MARK: AVAudioRecorderDelegate

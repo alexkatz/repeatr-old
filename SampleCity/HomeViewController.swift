@@ -11,9 +11,12 @@ import AVFoundation
 
 class HomeViewController: UIViewController {
 
+  private let audioService = AudioService.sharedInstance
+  
   @IBOutlet weak var recordView: RecordView!
   @IBOutlet weak var waveformView: WaveformView!
   @IBOutlet weak var loopRecordView: LoopRecordView!
+  @IBOutlet weak var loopPlaybackView: LoopPlaybackView!
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -22,10 +25,11 @@ class HomeViewController: UIViewController {
     self.recordView.backgroundColor = Constants.redColor
     self.waveformView.backgroundColor = Constants.greenColor
     
-    AudioService.sharedInstance.recordDelegate = self.recordView
-    AudioService.sharedInstance.playbackDelegate = self.waveformView
-    AudioService.sharedInstance.meterDelegate = self.waveformView
-    AudioService.sharedInstance.loopRecordDelegate = self.loopRecordView
+    self.audioService.recordDelegate = self.recordView
+    self.audioService.playbackDelegate = self.waveformView
+    self.audioService.meterDelegate = self.waveformView
+    self.audioService.loopRecordDelegate = self.loopRecordView
+    self.audioService.loopPlaybackDelegate = self.loopPlaybackView
   }
 
   override func prefersStatusBarHidden() -> Bool {
