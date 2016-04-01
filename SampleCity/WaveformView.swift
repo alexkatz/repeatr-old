@@ -155,16 +155,16 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           let bookmarkView = self.createBookmarkAtLocation(location)
           self.uncommittedBookmarkView = bookmarkView
         }
-      } else {
+      } else if !self.audioService.isPlayingLoop {
         if self.bookmarkViews.count == 0 {
           let percent = Double(location.x / self.bounds.width)
-          self.audioService.play(startPercent: percent)
+          self.audioService.playAudioWithStartPercent(percent)
         } else {
           let currentPercent = CGFloat(location.x / self.bounds.width)
           if let bookmarkView = self.bookmarkViews.filter({ $0.percentX < currentPercent }).last, startPercent = bookmarkView.percentX {
-            self.audioService.play(startPercent: Double(startPercent))
+            self.audioService.playAudioWithStartPercent(Double(startPercent))
           } else {
-            self.audioService.play(startPercent: 0)
+            self.audioService.playAudioWithStartPercent(0)
           }
         }
       }
@@ -189,7 +189,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if self.activeTouch != nil && touches.contains(self.activeTouch!) {
       if !self.audioService.isPlayingLoop {
-        self.audioService.stop()
+        self.audioService.stopAudio()
       }
       self.activeTouch = nil
       if self.bookmarkBaseView.backgroundColor != Constants.blackColorTransparent {

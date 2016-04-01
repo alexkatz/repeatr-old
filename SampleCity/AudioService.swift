@@ -36,21 +36,12 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   var isLoopRecording = false {
     didSet {
       self.loopRecordDelegate?.isLoopRecording = self.isLoopRecording
-      if self.isLoopRecording {
-        self.startLoopRecord()
-      } else {
-        self.stopLoopRecord()
-      }
     }
   }
   
   var isPlayingLoop = false {
     didSet {
       self.loopPlaybackDelegate?.isPlayingLoop = self.isPlayingLoop
-      if self.isPlayingLoop {
-      } else {
-        self.audioPlayer?.pause()
-      }
     }
   }
   
@@ -96,8 +87,9 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
-  func record() {
+  func recordAudio() {
     if !self.audioRecorder.recording {
+      self.clearLoop()
       self.audioRecorder.record()
       self.playbackDelegate?.audioURL = nil
       self.recordDelegate?.isRecording = true
@@ -107,12 +99,12 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
-  func play(startPercent percent: Double = 0) {
+  func playAudioWithStartPercent(percent: Double) {
     if let audioPlayer = self.audioPlayer {
       let audioTime = audioPlayer.duration * percent
       
       if self.isArmedForLoopRecord && !self.isLoopRecording { // first sample marks downbeat of 1 in loop in this case
-        self.isLoopRecording = true
+        self.startLoopRecord()
       }
       
       if let loopStartTime = self.loopStartTime where self.isLoopRecording {
@@ -127,7 +119,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
-  func stop() {
+  func stopAudio() {
     if self.audioRecorder.recording {
       self.audioRecorder.stop()
       self.recordDelegate?.isRecording = false
@@ -149,48 +141,58 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   }
   
   func startLoopRecord() {
+    self.clearLoop()
+    self.isArmedForLoopRecord = false
+    self.isLoopRecording = true
     self.loopStartTime = mach_absolute_time()
   }
   
-  func stopLoopRecord() {
+  func finishLoopRecord() {
     if let loopStartTime = self.loopStartTime {
       self.loopPoints.append(LoopPoint(
         intervalFromStart: mach_absolute_time() - loopStartTime,
         audioTime: nil))
     }
-    
-    self.startLoop()
+    self.isLoopRecording = false
+    self.startLoopPlayback()
   }
   
-  func startLoop() {
-    self.isPlayingLoop = true
-    self.startCursorTimer()
-    self.playbackQueue.addOperationWithBlock {
-      var i = 0
-      var startTime = mach_absolute_time()
-      repeat {
-        if i < self.loopPoints.count {
-          let loopPoint = self.loopPoints[i]
-          let intervalFromStart = mach_absolute_time() - startTime
-          if  intervalFromStart >= loopPoint.intervalFromStart {
-            if let audioTime = loopPoint.audioTime {
-              self.audioPlayer?.currentTime = audioTime
-              self.audioPlayer?.play()
-            } else {
-              self.audioPlayer?.pause()
+  func startLoopPlayback() {
+    if self.loopPoints.count > 0 {
+      self.isPlayingLoop = true
+      self.startCursorTimer()
+      let loopPoints = self.loopPoints
+      self.playbackQueue.addOperationWithBlock {
+        var i = 0
+        var startTime = mach_absolute_time()
+        repeat {
+          if i < loopPoints.count {
+            let loopPoint = loopPoints[i]
+            let intervalFromStart = mach_absolute_time() - startTime
+            if  intervalFromStart >= loopPoint.intervalFromStart {
+              if let audioTime = loopPoint.audioTime {
+                self.audioPlayer?.currentTime = audioTime
+                self.audioPlayer?.play()
+              } else {
+                self.audioPlayer?.pause()
+              }
+              i += 1
             }
-            i += 1
+          } else {
+            i = 0
+            startTime = mach_absolute_time()
           }
-        } else {
-          i = 0
-          startTime = mach_absolute_time()
-        }
-      } while (self.isPlayingLoop)
+        } while (self.isPlayingLoop)
+      }
     }
   }
   
-  func pauseLoop() {
+  func pauseLoopPlayback() {
     self.isPlayingLoop = false
+    self.audioPlayer?.pause()
+    self.cursorTimer?.invalidate()
+    self.cursorTimer = nil
+    self.playbackDelegate?.removeCursor()
   }
   
   func updateCurrentTime() {
@@ -210,6 +212,12 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       self.cursorTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
       self.cursorTimer?.tolerance = interval * 0.10
     }
+  }
+  
+  private func clearLoop() {
+    self.pauseLoopPlayback()
+    self.isLoopRecording = false
+    self.loopPoints.removeAll()
   }
   
   // MARK: AVAudioRecorderDelegate

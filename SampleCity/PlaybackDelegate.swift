@@ -11,4 +11,5 @@ import Foundation
 protocol PlaybackDelegate: class {
   var audioURL: NSURL? { get set }
   var currentTime: NSTimeInterval? { get set }
+  func removeCursor()
 }

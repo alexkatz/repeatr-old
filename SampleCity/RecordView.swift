@@ -27,11 +27,11 @@ class RecordView: UIView, RecordDelegate {
   // MARK: Overrides
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    self.audioService.record()
+    self.audioService.recordAudio()
   }
   
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    self.audioService.stop()
+    self.audioService.stopAudio()
   }
   
 }

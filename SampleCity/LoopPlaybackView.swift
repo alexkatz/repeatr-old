@@ -20,9 +20,9 @@ class LoopPlaybackView: UIView, LoopPlaybackDelegate {
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if self.audioService.isPlayingLoop {
-      self.audioService.pauseLoop()
+      self.audioService.pauseLoopPlayback()
     } else {
-      self.audioService.startLoop()
+      self.audioService.startLoopPlayback()
     }
   }
   
