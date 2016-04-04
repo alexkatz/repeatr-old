@@ -12,6 +12,11 @@ class BookmarkView: UIView {
   
   var cursorView: UIView!
   var percentX: CGFloat?
+  var color = Constants.blackColorTransparent {
+    didSet {
+      self.cursorView.backgroundColor = self.color
+    }
+  }
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -37,7 +42,7 @@ class BookmarkView: UIView {
   private func addCursorView() {
     self.cursorView = UIView()
     self.cursorView.translatesAutoresizingMaskIntoConstraints = false
-    self.cursorView.backgroundColor = Constants.blackColorTransparent
+    self.cursorView.backgroundColor = self.color
     self.addSubview(self.cursorView)
     
     let horizontal = self.cursorView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor)

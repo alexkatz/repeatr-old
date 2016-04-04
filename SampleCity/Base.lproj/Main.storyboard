@@ -19,85 +19,102 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UZH-qu-DJx" userLabel="WaveformView" customClass="WaveformView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="510"/>
-                                <color key="backgroundColor" red="0.0" green="0.92156862745098034" blue="0.59215686274509804" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wbk-pc-hIQ" userLabel="RecordView" customClass="RecordView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="512" width="300" height="88"/>
-                                <color key="backgroundColor" red="0.8784313725490196" green="0.45098039215686275" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="0.0" y="512" width="181" height="88"/>
+                                <color key="backgroundColor" red="0.83768452621874434" green="0.15770105347184746" blue="0.35762558463752464" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="88" id="qeS-Qg-Ydi"/>
+                                    <constraint firstAttribute="height" constant="88" id="ouJ-Pv-H4U"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OSO-1Z-YHT" userLabel="LoopRecordView" customClass="LoopRecordView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="302" y="512" width="146" height="88"/>
-                                <color key="backgroundColor" red="0.8784313725490196" green="0.45098039215686275" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="183" y="512" width="181" height="88"/>
+                                <color key="backgroundColor" red="0.83921568629999999" green="0.15686274510000001" blue="0.35686274509999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ccG-IV-MjF">
+                                <rect key="frame" x="0.0" y="20" width="600" height="490"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hTm-Wk-3bk">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="Trg-E8-CHU">
+                                <rect key="frame" x="281" y="473" width="39" height="37"/>
+                            </pageControl>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2bZ-Jz-ynt" userLabel="MoreView">
+                                <rect key="frame" x="488" y="512" width="112" height="88"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z0l-fL-BEz">
+                                        <rect key="frame" x="0.0" y="0.0" width="112" height="88"/>
+                                        <state key="normal" title="Tracks">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="handleMoreButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hn9-Dv-DsV"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="z0l-fL-BEz" secondAttribute="trailing" id="NcN-um-ocI"/>
+                                    <constraint firstItem="z0l-fL-BEz" firstAttribute="top" secondItem="2bZ-Jz-ynt" secondAttribute="top" id="i2L-7d-I01"/>
+                                    <constraint firstItem="z0l-fL-BEz" firstAttribute="leading" secondItem="2bZ-Jz-ynt" secondAttribute="leading" id="jpo-h2-ICO"/>
+                                    <constraint firstAttribute="bottom" secondItem="z0l-fL-BEz" secondAttribute="bottom" id="zdt-e0-Boj"/>
+                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wam-Cc-8g8" userLabel="LoopPlaybackView" customClass="LoopPlaybackView" customModule="SampleCity" customModuleProvider="target">
-                                <rect key="frame" x="450" y="512" width="150" height="88"/>
-                                <color key="backgroundColor" red="0.87843137250000003" green="0.45098039220000002" blue="0.52156862749999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <rect key="frame" x="366" y="512" width="120" height="88"/>
+                                <color key="backgroundColor" red="0.0" green="0.78431372549019607" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.5" id="1cT-nT-wS9"/>
-                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" constant="2" id="3KU-rG-oh6"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="UZH-qu-DJx" secondAttribute="trailing" constant="-20" id="5JV-g9-aSy"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="2" id="5x2-3S-PTR"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="2" id="9JS-5E-gsF"/>
-                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="leading" secondItem="OSO-1Z-YHT" secondAttribute="trailing" constant="2" id="AXD-WC-31t"/>
-                            <constraint firstItem="UZH-qu-DJx" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.7" id="AyA-05-sUh"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="2" id="FH6-Ev-gm5"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="300" id="Lhf-h5-HZj"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="-20" id="P8Y-F8-r7f"/>
-                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" id="QA6-MX-I5X"/>
-                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="492" id="RnC-bc-vv6"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="2" id="VBX-lt-qOo"/>
-                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="height" secondItem="wbk-pc-hIQ" secondAttribute="height" id="XlS-n7-Cwd"/>
-                            <constraint firstItem="UZH-qu-DJx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="aNw-QU-pgA"/>
-                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.5" id="bKv-xV-XIu"/>
-                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="c1Y-H7-Xa6"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="height" secondItem="wbk-pc-hIQ" secondAttribute="height" id="cH1-ZF-0vz"/>
-                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="top" secondItem="OSO-1Z-YHT" secondAttribute="top" id="fqg-lE-7kK"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="top" secondItem="UZH-qu-DJx" secondAttribute="bottom" constant="2" id="gCe-BM-eMT"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Wam-Cc-8g8" secondAttribute="trailing" constant="-20" id="iaK-qi-Gyh"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="OSO-1Z-YHT" secondAttribute="trailing" constant="-20" id="mGK-oA-F9Q"/>
-                            <constraint firstItem="UZH-qu-DJx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="-20" id="mNP-bT-7Kz"/>
-                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="top" secondItem="wbk-pc-hIQ" secondAttribute="top" id="nf8-Az-bVt"/>
-                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="pkh-WC-bSZ"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="q10-jm-sg1"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="OSO-1Z-YHT" secondAttribute="bottom" id="sGK-PD-Ouo"/>
-                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="xs0-xt-DGV"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="height" secondItem="Wam-Cc-8g8" secondAttribute="height" id="0fJ-hQ-Yv2"/>
+                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="ccG-IV-MjF" secondAttribute="bottom" constant="2" id="18k-ZT-hG0"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="1h0-Qx-K5f"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="width" secondItem="wbk-pc-hIQ" secondAttribute="width" id="27I-ct-fF0"/>
+                            <constraint firstItem="ccG-IV-MjF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="3Mt-EH-Gu5"/>
+                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="width" secondItem="OSO-1Z-YHT" secondAttribute="width" id="3gX-Md-vLD"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="height" secondItem="wbk-pc-hIQ" secondAttribute="height" id="6Uv-f3-NAJ"/>
+                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="height" secondItem="OSO-1Z-YHT" secondAttribute="height" id="9j1-Lb-S6Q"/>
+                            <constraint firstItem="ccG-IV-MjF" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Dlv-VH-sVc"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" constant="2" id="Nf1-Mk-AQg"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="bottom" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="PSZ-Cs-Qwm"/>
+                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="leading" secondItem="OSO-1Z-YHT" secondAttribute="trailing" constant="2" id="Pfs-jB-gdj"/>
+                            <constraint firstItem="Trg-E8-CHU" firstAttribute="bottom" secondItem="ccG-IV-MjF" secondAttribute="bottom" id="ZCf-EO-pXR"/>
+                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="bottom" secondItem="OSO-1Z-YHT" secondAttribute="bottom" id="g6F-z4-o0E"/>
+                            <constraint firstItem="Trg-E8-CHU" firstAttribute="centerX" secondItem="ccG-IV-MjF" secondAttribute="centerX" id="i1d-am-8Nm"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="igV-6M-ugy"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2bZ-Jz-ynt" secondAttribute="trailing" constant="-20" id="olD-Po-hss"/>
+                            <constraint firstItem="Wam-Cc-8g8" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.2" id="p37-PW-NIN"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="leading" secondItem="Wam-Cc-8g8" secondAttribute="trailing" constant="2" id="rE4-IZ-oIB"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="width" secondItem="Wam-Cc-8g8" secondAttribute="width" id="rgL-mY-0Br"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ccG-IV-MjF" secondAttribute="trailing" constant="-20" id="wdu-on-bgb"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="bottom" secondItem="Wam-Cc-8g8" secondAttribute="bottom" id="xMi-So-uzR"/>
+                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.3" constant="1" id="yxm-6N-kzn"/>
+                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="zml-yY-LhR"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="AyA-05-sUh"/>
-                                <exclude reference="P8Y-F8-r7f"/>
-                                <exclude reference="QA6-MX-I5X"/>
-                                <exclude reference="1cT-nT-wS9"/>
-                                <exclude reference="9JS-5E-gsF"/>
-                                <exclude reference="FH6-Ev-gm5"/>
-                                <exclude reference="Lhf-h5-HZj"/>
-                                <exclude reference="VBX-lt-qOo"/>
-                                <exclude reference="gCe-BM-eMT"/>
-                                <exclude reference="mGK-oA-F9Q"/>
-                                <exclude reference="sGK-PD-Ouo"/>
-                                <exclude reference="RnC-bc-vv6"/>
-                                <exclude reference="pkh-WC-bSZ"/>
+                                <exclude reference="3gX-Md-vLD"/>
+                                <exclude reference="igV-6M-ugy"/>
+                                <exclude reference="rgL-mY-0Br"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="collectionView" destination="ccG-IV-MjF" id="bl4-vq-yBd"/>
                         <outlet property="loopPlaybackView" destination="Wam-Cc-8g8" id="2wL-b8-nOy"/>
                         <outlet property="loopRecordView" destination="OSO-1Z-YHT" id="3CE-Hh-R1P"/>
+                        <outlet property="pageControl" destination="Trg-E8-CHU" id="Nb9-13-ET9"/>
                         <outlet property="recordView" destination="wbk-pc-hIQ" id="pq4-e5-rbp"/>
-                        <outlet property="waveformView" destination="UZH-qu-DJx" id="fEh-xp-jdC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-996" y="-218"/>
+            <point key="canvasLocation" x="-1673" y="-506"/>
         </scene>
     </scenes>
 </document>

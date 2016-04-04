@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B1DE0351CB2911900682689 /* WaveformCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE0341CB2911900682689 /* WaveformCollectionViewLayout.swift */; };
+		3B1DE0381CB3126500682689 /* LoopPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE0371CB3126500682689 /* LoopPoint.swift */; };
+		3B1DE03A1CB3134E00682689 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE0391CB3134E00682689 /* Track.swift */; };
 		3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */; };
+		3B49100F1CB2035E00465504 /* WaveformCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49100E1CB2035E00465504 /* WaveformCollectionViewCell.swift */; };
 		3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */; };
 		3B8148921CA32B2100E5D91D /* BookmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8148911CA32B2100E5D91D /* BookmarkView.swift */; };
 		3B98F68D1CA032B4000DB79E /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B98F68C1CA032B4000DB79E /* AudioService.swift */; };
@@ -27,7 +31,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3B1DE0341CB2911900682689 /* WaveformCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaveformCollectionViewLayout.swift; sourceTree = "<group>"; };
+		3B1DE0371CB3126500682689 /* LoopPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPoint.swift; sourceTree = "<group>"; };
+		3B1DE0391CB3134E00682689 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
 		3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordDelegate.swift; sourceTree = "<group>"; };
+		3B49100E1CB2035E00465504 /* WaveformCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaveformCollectionViewCell.swift; sourceTree = "<group>"; };
 		3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordView.swift; sourceTree = "<group>"; };
 		3B8148911CA32B2100E5D91D /* BookmarkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookmarkView.swift; sourceTree = "<group>"; };
 		3B98F68C1CA032B4000DB79E /* AudioService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
@@ -59,6 +67,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B1DE0361CB3125700682689 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3B1DE0371CB3126500682689 /* LoopPoint.swift */,
+				3B1DE0391CB3134E00682689 /* Track.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		3B49100D1CB2028300465504 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				3B49100E1CB2035E00465504 /* WaveformCollectionViewCell.swift */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		3B98F68B1CA0329A000DB79E /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -79,12 +104,13 @@
 			name = Delegates;
 			sourceTree = "<group>";
 		};
-		3B98F6981CA04732000DB79E /* Util */ = {
+		3B98F6981CA04732000DB79E /* Misc */ = {
 			isa = PBXGroup;
 			children = (
 				3B98F6991CA0474B000DB79E /* Constants.swift */,
+				3B1DE0341CB2911900682689 /* WaveformCollectionViewLayout.swift */,
 			);
-			name = Util;
+			name = Misc;
 			sourceTree = "<group>";
 		};
 		3BE5DDA21C9E314C00574670 = {
@@ -106,9 +132,11 @@
 		3BE5DDAD1C9E314C00574670 /* SampleCity */ = {
 			isa = PBXGroup;
 			children = (
-				3B98F6981CA04732000DB79E /* Util */,
+				3B1DE0361CB3125700682689 /* Models */,
+				3B98F6981CA04732000DB79E /* Misc */,
 				3B98F68E1CA03E40000DB79E /* Delegates */,
 				3B98F68B1CA0329A000DB79E /* Services */,
+				3B49100D1CB2028300465504 /* Cells */,
 				3BE5DDC11C9F572A00574670 /* Views */,
 				3BE5DDC01C9F56D100574670 /* ViewControllers */,
 				3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */,
@@ -214,7 +242,9 @@
 				3B98F68D1CA032B4000DB79E /* AudioService.swift in Sources */,
 				3BE5DDB11C9E314C00574670 /* HomeViewController.swift in Sources */,
 				3BE5DDAF1C9E314C00574670 /* AppDelegate.swift in Sources */,
+				3B49100F1CB2035E00465504 /* WaveformCollectionViewCell.swift in Sources */,
 				3B98F6951CA042FF000DB79E /* MeterDelegate.swift in Sources */,
+				3B1DE03A1CB3134E00682689 /* Track.swift in Sources */,
 				3B98F6901CA03E62000DB79E /* PlaybackDelegate.swift in Sources */,
 				3BAF48101CADAE71009ADA6E /* LoopPlaybackDelegate.swift in Sources */,
 				3B98F6971CA046E9000DB79E /* RecordView.swift in Sources */,
@@ -222,7 +252,9 @@
 				3BE5DDC31C9F575E00574670 /* WaveformView.swift in Sources */,
 				3B98F6931CA042B9000DB79E /* RecordDelegate.swift in Sources */,
 				3B98F69A1CA0474B000DB79E /* Constants.swift in Sources */,
+				3B1DE0381CB3126500682689 /* LoopPoint.swift in Sources */,
 				3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */,
+				3B1DE0351CB2911900682689 /* WaveformCollectionViewLayout.swift in Sources */,
 				3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */,
 				3BAF48121CADB62E009ADA6E /* LoopPlaybackView.swift in Sources */,
 			);

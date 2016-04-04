@@ -21,6 +21,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   private var bookmarkViews = [BookmarkView]()
   private var uncommittedBookmarkView: BookmarkView?
   private var activeTouch: UITouch?
+  private var internalEnabled = false
   
   private lazy var plotImageView: UIImageView = { [unowned self] in
     let plotImageView = UIImageView()
@@ -31,7 +32,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   private lazy var meterView: UIView = { [unowned self] in
     let meterView = UIView()
-    meterView.backgroundColor = Constants.blackColorTransparent
+    meterView.backgroundColor = self.meterColor
     meterView.translatesAutoresizingMaskIntoConstraints = false
     self.addSubview(meterView)
     
@@ -48,7 +49,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   private lazy var bookmarkBaseView: UIView = { [unowned self] in
     let bookmarkBaseView = UIView()
-    bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
+    bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
     bookmarkBaseView.translatesAutoresizingMaskIntoConstraints = false
     self.addSubview(bookmarkBaseView)
     
@@ -77,6 +78,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           self.plotImageView.alpha = 1
           self.bookmarkBaseView.alpha = 1
         }
+        
       } else {
         self.clear()
       }
@@ -98,7 +100,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   var dbLevel: Float? {
     didSet {
       if let dbLevel = self.dbLevel {
-        self.meterView.alpha = 0.3
+        self.meterView.alpha = 1
         let noiseFloor = 0 - self.audioService.noiseFloor
         let heightPercent = CGFloat((noiseFloor - abs(dbLevel)) / noiseFloor)
         self.meterHeightConstraint?.constant = heightPercent > 0 ? (self.bounds.height / 2) * heightPercent : 0
@@ -108,6 +110,18 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     }
   }
   
+  var waveColor = UIColor.whiteColor()
+  var cursorColor = UIColor.whiteColor().colorWithAlphaComponent(0.2)
+  var bookmarkColor = UIColor.whiteColor().colorWithAlphaComponent(0.2)
+  var bookmarkBaseColor = UIColor.whiteColor().colorWithAlphaComponent(0.2)
+  var meterColor = UIColor.whiteColor().colorWithAlphaComponent(0.3)
+  
+  var enabled: Bool {
+    get {
+      return self.internalEnabled
+    }
+  }
+
   // MARK: inits
   
   override init(frame: CGRect) {
@@ -148,7 +162,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     
     if let location = self.activeTouch?.locationInView(self) {
       if self.bookmarkBaseView.frame.contains(location) {
-        self.bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.2)
+        self.bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
           self.uncommittedBookmarkView = bookmarkView
         } else {
@@ -191,17 +205,8 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       if !self.audioService.isPlayingLoop {
         self.audioService.stopAudio()
       }
+      
       self.activeTouch = nil
-      if self.bookmarkBaseView.backgroundColor != Constants.blackColorTransparent {
-        UIView.animateWithDuration(
-          Constants.defaultAnimationDuration,
-          delay: 0,
-          options: [.AllowUserInteraction, .BeginFromCurrentState],
-          animations: {
-            self.bookmarkBaseView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.1)
-          },
-          completion: nil)
-      }
       
       if let uncommittedBookmarkView = self.uncommittedBookmarkView {
         if uncommittedBookmarkView.alpha < 1 {
@@ -222,6 +227,22 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   // MARK: Methods
   
+  func setEnabled(enabled: Bool, animated: Bool = false) {
+    self.userInteractionEnabled = enabled
+    let viewChanges = {
+      self.alpha = enabled ? 1 : 0.5
+      self.bookmarkBaseView.alpha = enabled ? 1 : 0
+    }
+    
+    if animated {
+      UIView.animateWithDuration(Constants.defaultAnimationDuration) {
+        viewChanges()
+      }
+    } else {
+      viewChanges()
+    }
+  }
+  
   func createBookmarkAtLocation(location: CGPoint) -> BookmarkView {
     let bookmarkView = BookmarkView(
       frame: CGRect(
@@ -229,6 +250,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         y: 0,
         width: Constants.bookmarkViewWidth,
         height: self.bounds.height))
+    bookmarkView.color = self.bookmarkColor
     self.bookmarkViews.append(bookmarkView)
     self.addSubview(bookmarkView)
     return bookmarkView
@@ -237,7 +259,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   func setCursorPositionWithPercent(percent: CGFloat) {
     if self.cursor == nil {
       self.cursor = UIView()
-      self.cursor?.backgroundColor = Constants.blackColorTransparent
+      self.cursor?.backgroundColor = self.cursorColor
       self.addSubview(self.cursor!)
     }
     
@@ -291,7 +313,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     CGContextSetShouldAntialias(context, false)
     CGContextSetAlpha(context, 1)
     CGContextSetLineWidth(context, 1)
-    CGContextSetStrokeColorWithColor(context, Constants.blackColorTransparent.CGColor)
+    CGContextSetStrokeColorWithColor(context, self.waveColor.CGColor)
     
     let sampleAdjustmentFactor = Float(imageHeight) / (maxSample - self.audioService.noiseFloor) / 2
     let halfImageHeight = Float(imageHeight) / 2

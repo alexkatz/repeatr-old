@@ -11,10 +11,7 @@ import AVFoundation
 
 class AudioService: NSObject, AVAudioRecorderDelegate {
   
-  private struct LoopPoint {
-    let intervalFromStart: UInt64
-    let audioTime: Double?
-  }
+
   
   private let playbackQueue = NSOperationQueue()
   
