@@ -9,33 +9,45 @@
 import UIKit
 import AVFoundation
 
-class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, TrackSelectorDelegate {
   
-  private let audioService = AudioService.sharedInstance
   private var selectedWaveformView: WaveformView?
+  private var tracks = [Track]()
   
   @IBOutlet weak var recordView: RecordView!
   @IBOutlet weak var collectionView: UICollectionView!
   @IBOutlet weak var pageControl: UIPageControl!
   @IBOutlet weak var loopRecordView: LoopRecordView!
   @IBOutlet weak var loopPlaybackView: LoopPlaybackView!
+  @IBOutlet weak var trackAccessView: TrackAccessView!
   
-  var scrollEnabled = false
+  var scrollEnabled = false {
+    didSet {
+      self.collectionView.scrollEnabled = self.scrollEnabled
+      UIView.animateWithDuration(Constants.defaultAnimationDuration, delay: 0, options: [.AllowUserInteraction, .BeginFromCurrentState], animations: {
+        self.pageControl.alpha = self.scrollEnabled ? 1 : 0
+        self.selectedWaveformView?.enabled = !self.scrollEnabled
+        }, completion: nil)
+    }
+  }
+  
+  var isSelectingTrack = false {
+    didSet {
+      self.scrollEnabled = self.isSelectingTrack
+    }
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.view.backgroundColor = UIColor.blackColor()
-    self.recordView.backgroundColor = Constants.redColor
-    
-    self.audioService.recordDelegate = self.recordView
-    self.audioService.loopRecordDelegate = self.loopRecordView
-    self.audioService.loopPlaybackDelegate = self.loopPlaybackView
+    self.tracks.append(Track(audioService: AudioService()))
     
     self.pageControl.userInteractionEnabled = false
-    self.pageControl.numberOfPages = 1
+    self.pageControl.numberOfPages = self.tracks.count + 1
     self.pageControl.currentPage = 0
-
+    
+    self.trackAccessView.delegate = self
+    
     self.collectionView.registerClass(WaveformCollectionViewCell.self, forCellWithReuseIdentifier: String(WaveformCollectionViewCell))
     self.collectionView.delegate = self
     self.collectionView.dataSource = self
@@ -47,12 +59,13 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     if !(self.collectionView.collectionViewLayout is WaveformCollectionViewLayout) {
       self.setCollectionViewLayoutWithSize(self.collectionView.bounds.size)
       self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: self.pageControl.currentPage, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: false)
+      self.scrollEnabled = false
     }
   }
-
+  
   override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-    let newCollectionViewSize = CGSize(width: size.width, height: size.height - CGFloat(Constants.recordButtonHeight + Constants.homePadding))
+    let newCollectionViewSize = CGSize(width: size.width, height: size.height - CGFloat(Constants.recordButtonHeight))
     
     coordinator.animateAlongsideTransition({ context in
       self.setCollectionViewLayoutWithSize(newCollectionViewSize)
@@ -64,15 +77,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     return true
   }
   
-  @IBAction func handleMoreButton(sender: AnyObject) {
-    self.scrollEnabled = !self.scrollEnabled
-    self.collectionView.scrollEnabled = self.scrollEnabled
-    self.pageControl.alpha = self.scrollEnabled ? 1 : 0
-    self.selectedWaveformView?.setEnabled(!self.scrollEnabled)
-    
-  }
-  
-  
   private func setCollectionViewLayoutWithSize(size: CGSize, animated: Bool = false) {
     let layout = WaveformCollectionViewLayout(bounds: size)
     self.collectionView.setCollectionViewLayout(layout, animated: animated)
@@ -81,14 +85,32 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   // MARK: UICollectionViewDataSource
   
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return 1
+    return self.tracks.count + 1
   }
   
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(WaveformCollectionViewCell), forIndexPath: indexPath) as! WaveformCollectionViewCell
-    self.audioService.playbackDelegate = cell.waveformView
-    self.audioService.meterDelegate = cell.waveformView
-    self.selectedWaveformView = cell.waveformView
+    if indexPath.item < self.tracks.count {
+      
+      let track = self.tracks[indexPath.item]
+      cell.waveformView = track.waveformView
+      track.audioService.recordDelegate = self.recordView
+      track.audioService.loopRecordDelegate = self.loopRecordView
+      track.audioService.loopPlaybackDelegate = self.loopPlaybackView
+      track.audioService.trackAccessDelegate = self.trackAccessView
+      track.audioService.playbackDelegate = track.waveformView
+      track.audioService.meterDelegate = track.waveformView
+
+      self.recordView.audioService = track.audioService
+      self.loopRecordView.audioService = track.audioService
+      self.loopPlaybackView.audioService = track.audioService
+      cell.waveformView?.audioService = track.audioService
+      
+      self.selectedWaveformView = track.waveformView
+    } else {
+      cell.title = "NEW TRACK"
+    }
+    
     return cell
   }
   

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol LoopRecordDelegate: class {
+protocol LoopRecordDelegate: class, Disablable {
   var isLoopRecording: Bool { get set }
   var isArmed: Bool { get set }
 }

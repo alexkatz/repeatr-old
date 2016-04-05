@@ -8,20 +8,20 @@
 
 import UIKit
 
-class LoopRecordView: UIView, LoopRecordDelegate {
+class LoopRecordView: ControlLabelView, LoopRecordDelegate {
   
-  private let audioService = AudioService.sharedInstance
+  private let loopText = "LOOP"
   
   var isArmed = false {
     didSet {
       if self.isArmed {
-        self.isDimmed = true
+        self.isWhite = false
         let interval = 0.35
         self.armedTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(LoopRecordView.toggleArmed), userInfo: nil, repeats: true)
         self.armedTimer?.tolerance = interval * 0.10
       } else {
         self.armedTimer?.invalidate()
-        self.isDimmed = false
+        self.isWhite = true
       }
     }
   }
@@ -30,34 +30,41 @@ class LoopRecordView: UIView, LoopRecordDelegate {
     didSet {
       if self.isLoopRecording {
         self.armedTimer?.invalidate()
-        self.isDimmed = true
+        self.isWhite = false
       } else {
-        self.isDimmed = false
+        self.isWhite = true
         self.isArmed = false
       }
     }
   }
   
-  var isDimmed = false {
+  var isWhite = false {
     didSet {
-      self.backgroundColor = Constants.redColor.colorWithAlphaComponent(self.isDimmed ? 0.8 : 1)
+      self.label.textColor = self.isWhite ? Constants.whiteColor : Constants.redColor
     }
   }
   
   var armedTimer: NSTimer?
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if self.audioService.isLoopRecording {
-      self.audioService.finishLoopRecord()
-    } else if !self.audioService.isArmedForLoopRecord {
-      self.audioService.isArmedForLoopRecord = true
-    } else if self.audioService.isArmedForLoopRecord && !self.audioService.isLoopRecording {
-      self.audioService.startLoopRecord()
+    if let audioService = self.audioService {
+      if audioService.isLoopRecording {
+        audioService.finishLoopRecord()
+      } else if !audioService.isArmedForLoopRecord {
+        audioService.isArmedForLoopRecord = true
+      } else if audioService.isArmedForLoopRecord && !audioService.isLoopRecording {
+        audioService.startLoopRecord()
+      }
     }
   }
   
+  override func setup() {
+    self.enabled = false
+    self.label.text = self.loopText
+  }
+  
   func toggleArmed() {
-    self.isDimmed = !self.isDimmed
+    self.isWhite = !self.isWhite
   }
   
 }

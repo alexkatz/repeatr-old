@@ -8,6 +8,7 @@
 
 import Foundation
 
-protocol LoopPlaybackDelegate: class {
+protocol LoopPlaybackDelegate: class, Disablable {
+  var loopExists: Bool { get set }
   var isPlayingLoop: Bool { get set }
 }

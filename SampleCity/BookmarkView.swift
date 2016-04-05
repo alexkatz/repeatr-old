@@ -12,7 +12,7 @@ class BookmarkView: UIView {
   
   var cursorView: UIView!
   var percentX: CGFloat?
-  var color = Constants.blackColorTransparent {
+  var color = UIColor.whiteColor() {
     didSet {
       self.cursorView.backgroundColor = self.color
     }

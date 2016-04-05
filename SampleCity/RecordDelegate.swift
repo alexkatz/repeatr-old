@@ -8,7 +8,6 @@
 
 import Foundation
 
-protocol RecordDelegate: class {
+protocol RecordDelegate: class, Disablable {
   var isRecording: Bool { get set }
-  var isLoopRecording: Bool { get set }
 }

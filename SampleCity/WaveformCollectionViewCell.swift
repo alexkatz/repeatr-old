@@ -10,49 +10,51 @@ import UIKit
 
 class WaveformCollectionViewCell: UICollectionViewCell {
   
-  var waveformView: WaveformView!
+  var waveformView: WaveformView? {
+    willSet {
+      if let waveformView = self.waveformView {
+        waveformView.removeFromSuperview()
+      }
+    }
+    didSet {
+      if let waveformView = self.waveformView {
+        self.addWaveformView(waveformView)
+      }
+    }
+  }
   
   lazy var label: UILabel = { [unowned self] in
     let label = UILabel()
-    label.textColor = UIColor.whiteColor()
+    label.textColor = Constants.whiteColor
     label.translatesAutoresizingMaskIntoConstraints = false
+    label.font = Constants.font
     self.addSubview(label)
     
     label.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
     label.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
     
     return label
-  }()
-  
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    self.layoutWaveformView()
-  }
-  
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    self.layoutWaveformView()
-  }
+    }()
   
   var title: String? {
     didSet {
       self.label.text = self.title
+      self.label.alpha = self.title != nil ? 1 : 0
+      if self.title == nil {
+        self.waveformView = nil
+      }
     }
   }
   
-  private func layoutWaveformView() {
-    self.waveformView = WaveformView()
-    self.waveformView.waveColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
-    self.waveformView.cursorColor = UIColor.whiteColor().colorWithAlphaComponent(0.3)
-    self.waveformView.bookmarkColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
-    self.waveformView.bookmarkBaseColor = UIColor.whiteColor().colorWithAlphaComponent(0.3)
-    self.waveformView.translatesAutoresizingMaskIntoConstraints = false
-    self.addSubview(self.waveformView)
+  private func addWaveformView(waveformView: WaveformView) {
+    waveformView.translatesAutoresizingMaskIntoConstraints = false
     
-    self.waveformView.leadingAnchor.constraintEqualToAnchor(self.leadingAnchor).active = true
-    self.waveformView.trailingAnchor.constraintEqualToAnchor(self.trailingAnchor).active = true
-    self.waveformView.topAnchor.constraintEqualToAnchor(self.topAnchor).active = true
-    self.waveformView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
+    self.addSubview(waveformView)
+    
+    waveformView.leadingAnchor.constraintEqualToAnchor(self.leadingAnchor).active = true
+    waveformView.trailingAnchor.constraintEqualToAnchor(self.trailingAnchor).active = true
+    waveformView.topAnchor.constraintEqualToAnchor(self.topAnchor).active = true
+    waveformView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
   }
   
 }

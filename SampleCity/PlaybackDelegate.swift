@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol PlaybackDelegate: class {
+protocol PlaybackDelegate: class, Disablable {
   var audioURL: NSURL? { get set }
   var currentTime: NSTimeInterval? { get set }
   func removeCursor()

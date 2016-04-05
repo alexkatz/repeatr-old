@@ -8,22 +8,38 @@
 
 import UIKit
 
-class LoopPlaybackView: UIView, LoopPlaybackDelegate {
+class LoopPlaybackView: ControlLabelView, LoopPlaybackDelegate {
   
-  private let audioService = AudioService.sharedInstance
-  
+  private let playingText = "PLAYING"
+  private let pausedText = "PAUSED"
+
   var isPlayingLoop = false {
     didSet {
-      self.backgroundColor = self.isPlayingLoop ? Constants.greenColor : Constants.redColor
+      self.label.text = self.isPlayingLoop ? self.playingText : self.pausedText
+      self.label.textColor = self.isPlayingLoop ? Constants.greenColor : Constants.whiteColor
+    }
+  }
+  
+  var loopExists = false {
+    didSet {
+      self.enabled = self.loopExists
+      if !self.loopExists {
+        self.label.text = self.pausedText
+      }
     }
   }
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if self.audioService.isPlayingLoop {
-      self.audioService.pauseLoopPlayback()
+    if self.audioService != nil && self.audioService!.isPlayingLoop {
+      self.audioService?.pauseLoopPlayback()
     } else {
-      self.audioService.startLoopPlayback()
+      self.audioService?.startLoopPlayback()
     }
+  }
+  
+  override func setup() {
+    self.label.text = self.pausedText
+    self.enabled = false
   }
   
 }

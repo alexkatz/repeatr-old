@@ -8,30 +8,26 @@
 
 import UIKit
 
-class RecordView: UIView, RecordDelegate {
-  
-  private let audioService = AudioService.sharedInstance
-  
+class RecordView: ControlLabelView, RecordDelegate {
+
   var isRecording: Bool = false {
     didSet {
-      self.backgroundColor = Constants.redColor.colorWithAlphaComponent(self.isRecording ? 0.8 : 1)
+      self.label.alpha = self.isRecording ? Constants.dimAlpha : 1
     }
   }
-  
-  var isLoopRecording: Bool = false {
-    didSet {
-      
-    }
-  }
-  
-  // MARK: Overrides
-  
+
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    self.audioService.recordAudio()
+    self.audioService?.recordAudio()
   }
   
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    self.audioService.stopAudio()
+    self.audioService?.stopAudio()
+  }
+  
+  override func setup() {
+    self.label.text = "RECORD"
+    self.label.textColor = Constants.redColor
+    self.enabled = true
   }
   
 }

@@ -17,6 +17,11 @@ class Track {
   init(audioService: AudioService) {
     self.audioService = audioService
     self.waveformView = WaveformView()
+    
+    self.waveformView.waveColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
+    self.waveformView.cursorColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimmerAlpha)
+    self.waveformView.bookmarkColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
+    self.waveformView.bookmarkBaseColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimmerAlpha)
   }
   
 }
