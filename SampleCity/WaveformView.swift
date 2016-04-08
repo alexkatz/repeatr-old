@@ -11,7 +11,7 @@ import AVFoundation
 
 class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
-  var audioService: AudioService?
+  private let bookmarkRemovalThresholdTime: UInt64 = 3500000
   
   private var totalSamples = 0
   private var asset: AVURLAsset?
@@ -19,8 +19,19 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   private var cursor: UIView?
   private var meterHeightConstraint: NSLayoutConstraint?
   private var bookmarkViews = [BookmarkView]()
-  private var uncommittedBookmarkView: BookmarkView?
   private var activeTouch: UITouch?
+  private var uncommittedBookmarkTime: UInt64?
+  private var isPlacingBookmark = false
+  
+  private var uncommittedBookmarkView: BookmarkView? {
+    didSet {
+      if self.uncommittedBookmarkView != nil && oldValue == nil {
+        self.uncommittedBookmarkTime = mach_absolute_time()
+      } else if self.uncommittedBookmarkView == nil {
+        self.isPlacingBookmark = false
+      }
+    }
+  }
   
   private lazy var plotImageView: UIImageView = { [unowned self] in
     let plotImageView = UIImageView()
@@ -62,6 +73,11 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     return bookmarkBaseView
     }()
   
+  
+  private lazy var label: UILabel = LayoutHelper.createInfoLabel()
+  
+  var trackService: TrackService?
+  
   var audioURL: NSURL? {
     didSet {
       if let audioURL = self.audioURL {
@@ -100,9 +116,10 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   var dbLevel: Float? {
     didSet {
-      if let dbLevel = self.dbLevel, audioService = self.audioService {
+      if let dbLevel = self.dbLevel, trackService = self.trackService {
+        self.label.removeFromSuperview()
         self.meterView.alpha = 1
-        let noiseFloor = 0 - audioService.noiseFloor
+        let noiseFloor = 0 - trackService.noiseFloor
         let heightPercent = CGFloat((noiseFloor - abs(dbLevel)) / noiseFloor)
         self.meterHeightConstraint?.constant = heightPercent > 0 ? (self.bounds.height / 2) * heightPercent : 0
       } else {
@@ -112,9 +129,17 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   var waveColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-  var cursorColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+  var cursorColor = UIColor.whiteColor().colorWithAlphaComponent(0.5) {
+    didSet {
+      self.cursor?.backgroundColor = self.cursorColor
+    }
+  }
   var bookmarkColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
-  var bookmarkBaseColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+  var bookmarkBaseColor = UIColor.whiteColor().colorWithAlphaComponent(0.5) {
+    didSet {
+      self.bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
+    }
+  }
   var meterColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
   
   var enabled = true {
@@ -163,8 +188,8 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       }
     }
     
-    if let location = self.activeTouch?.locationInView(self), audioService = self.audioService {
-      if self.bookmarkBaseView.frame.contains(location) {
+    if let location = self.activeTouch?.locationInView(self), audioService = self.trackService {
+      if self.bookmarkBaseView.frame.contains(location) && self.bookmarkBaseView.alpha == 1 {
         self.bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
           self.uncommittedBookmarkView = bookmarkView
@@ -194,26 +219,30 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     }
     
     if let uncommittedBookmarkView = self.uncommittedBookmarkView {
-      if let location = touches.first?.locationInView(self) {
-        uncommittedBookmarkView.center = CGPoint(x: location.x, y: uncommittedBookmarkView.center.y)
-        UIView.animateWithDuration(Constants.defaultAnimationDuration) {
-          uncommittedBookmarkView.alpha = location.y > self.bounds.height ? 0.2 : 1
-        }
+      if let location = touches.first?.locationInView(self), previousLocation = touches.first?.previousLocationInView(self) {
+        let deltaX = location.x - previousLocation.x
+        uncommittedBookmarkView.center = CGPoint(x: uncommittedBookmarkView.center.x + deltaX, y: uncommittedBookmarkView.center.y)
       }
     }
   }
   
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if let audioService = self.audioService where self.activeTouch != nil && touches.contains(self.activeTouch!) {
+    if let audioService = self.trackService where self.activeTouch != nil && touches.contains(self.activeTouch!) {
       if !audioService.isPlayingLoop {
         audioService.stopAudio()
       }
       
       self.activeTouch = nil
       
-      if let uncommittedBookmarkView = self.uncommittedBookmarkView {
-        if uncommittedBookmarkView.alpha < 1 {
-          uncommittedBookmarkView.removeFromSuperview()
+      if let uncommittedBookmarkView = self.uncommittedBookmarkView, uncommittedBookmarkTime = self.uncommittedBookmarkTime {
+        if mach_absolute_time() - uncommittedBookmarkTime < self.bookmarkRemovalThresholdTime && !self.isPlacingBookmark {
+          uncommittedBookmarkView.userInteractionEnabled = false
+          UIView.animateWithDuration(Constants.defaultAnimationDuration, delay: 0, options: [.BeginFromCurrentState], animations: {
+            uncommittedBookmarkView.alpha = 0
+            }, completion: { finished in
+              uncommittedBookmarkView.removeFromSuperview()
+          })
+          
           if let index = self.bookmarkViews.indexOf(uncommittedBookmarkView) {
             self.bookmarkViews.removeAtIndex(index)
           }
@@ -240,6 +269,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     bookmarkView.color = self.bookmarkColor
     self.bookmarkViews.append(bookmarkView)
     self.addSubview(bookmarkView)
+    self.isPlacingBookmark = true
     return bookmarkView
   }
   
@@ -274,6 +304,14 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     self.cursor?.backgroundColor = self.cursorColor
     self.addSubview(self.cursor!)
     self.enabled = self.audioURL != nil
+    
+    let introText = "HOLD RECORD BELOW TO RECORD SOME AUDIO, YOU PUNK."
+    let range = (introText as NSString).rangeOfString(" RECORD ")
+    let attributedString = NSMutableAttributedString(string: introText)
+    attributedString.addAttributes([NSForegroundColorAttributeName: Constants.redColor], range: range)
+    self.label.attributedText = attributedString
+    LayoutHelper.addInfoLabel(self.label, toView: self)
+    self.setNeedsLayout()
   }
   
   private func drawWaveform() {
@@ -291,7 +329,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   private func plotWithSamples(samples: NSData, maxSample: Float, imageHeight: Int, done: ((UIImage?) -> ())?) {
-    if let audioService = self.audioService {
+    if let audioService = self.trackService {
       let s = UnsafePointer<Float>(samples.bytes)
       let sampleCount = samples.length / 4
       let imageSize = CGSize(width: sampleCount, height: imageHeight)
@@ -325,7 +363,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   private func downsampleAssetForWidth(widthInPixels: Int, done: ((NSData?, Float?) -> ())?) {
-    if let asset = self.asset, assetTrack = self.assetTrack, audioService = self.audioService where self.totalSamples > 0 && widthInPixels > 0 {
+    if let asset = self.asset, assetTrack = self.assetTrack, audioService = self.trackService where self.totalSamples > 0 && widthInPixels > 0 {
       do {
         let reader = try AVAssetReader(asset: asset)
         reader.timeRange = CMTimeRangeMake(CMTime(seconds: 0, preferredTimescale: asset.duration.timescale), CMTime(seconds: Double(self.totalSamples), preferredTimescale: asset.duration.timescale))
@@ -381,7 +419,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           done?(fullAudioData, sampleMax)
         }
       } catch {
-        print("There was a problem downsampling the asset")
+        print("There was a problem downsampling the asset: \(error)")
       }
     } else {
       done?(nil, nil)

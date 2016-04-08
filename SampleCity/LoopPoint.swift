@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import AVFoundation
 
 struct LoopPoint {
+  let uuid = NSUUID().UUIDString
   let intervalFromStart: UInt64
   let audioTime: Double?
+  let audioPlayer: AVAudioPlayer
 }

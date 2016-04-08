@@ -47,13 +47,13 @@ class LoopRecordView: ControlLabelView, LoopRecordDelegate {
   var armedTimer: NSTimer?
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if let audioService = self.audioService {
-      if audioService.isLoopRecording {
-        audioService.finishLoopRecord()
-      } else if !audioService.isArmedForLoopRecord {
-        audioService.isArmedForLoopRecord = true
-      } else if audioService.isArmedForLoopRecord && !audioService.isLoopRecording {
-        audioService.startLoopRecord()
+    if let trackService = self.trackService {
+      if trackService.isLoopRecording {
+        trackService.finishLoopRecord()
+      } else if !trackService.isArmedForLoopRecord {
+        trackService.isArmedForLoopRecord = true
+      } else if trackService.isArmedForLoopRecord && !trackService.isLoopRecording {
+        trackService.startLoopRecord()
       }
     }
   }

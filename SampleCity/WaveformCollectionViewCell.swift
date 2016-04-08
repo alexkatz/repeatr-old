@@ -10,43 +10,30 @@ import UIKit
 
 class WaveformCollectionViewCell: UICollectionViewCell {
   
+  private lazy var label: UILabel = LayoutHelper.createInfoLabel()
+  
   var waveformView: WaveformView? {
-    willSet {
-      if let waveformView = self.waveformView {
-        waveformView.removeFromSuperview()
-      }
-    }
     didSet {
+      oldValue?.removeFromSuperview()
       if let waveformView = self.waveformView {
         self.addWaveformView(waveformView)
       }
     }
   }
   
-  lazy var label: UILabel = { [unowned self] in
-    let label = UILabel()
-    label.textColor = Constants.whiteColor
-    label.translatesAutoresizingMaskIntoConstraints = false
-    label.font = Constants.font
-    self.addSubview(label)
-    
-    label.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
-    label.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
-    
-    return label
-    }()
-  
   var title: String? {
     didSet {
       self.label.text = self.title
-      self.label.alpha = self.title != nil ? 1 : 0
       if self.title == nil {
-        self.waveformView = nil
+        self.label.removeFromSuperview()
+      } else {
+        LayoutHelper.addInfoLabel(self.label, toView: self)
       }
     }
   }
   
   private func addWaveformView(waveformView: WaveformView) {
+    waveformView.backgroundColor = UIColor.blackColor()
     waveformView.translatesAutoresizingMaskIntoConstraints = false
     
     self.addSubview(waveformView)

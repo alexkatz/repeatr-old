@@ -11,7 +11,7 @@ import UIKit
 
 class ControlLabelView: UIView, Disablable {
   
-  var audioService: AudioService?
+  var trackService: TrackService?
   
   var enabled = false {
     didSet {

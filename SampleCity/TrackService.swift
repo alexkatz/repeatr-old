@@ -9,10 +9,12 @@
 import Foundation
 import AVFoundation
 
-class AudioService: NSObject, AVAudioRecorderDelegate {
-  
+class TrackService: NSObject, AVAudioRecorderDelegate {
+
   private let playbackQueue = NSOperationQueue()
   
+  private let loopService = LoopService.sharedInstance
+
   private var audioPlayer: AVAudioPlayer?
   private var audioRecorder: AVAudioRecorder!
   private var cursorTimer: NSTimer?
@@ -20,7 +22,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   private var loopPoints = [LoopPoint]()
   private var loopStartTime: UInt64!
   
-  static let sharedInstance = AudioService()
+  let uuid = NSUUID().UUIDString
   
   var isArmedForLoopRecord = false {
     didSet {
@@ -38,9 +40,16 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   var isPlayingLoop = false {
     didSet {
       self.loopPlaybackDelegate?.isPlayingLoop = self.isPlayingLoop
-      self.loopRecordDelegate?.enabled = !self.isPlayingLoop
       self.recordDelegate?.enabled = !self.isPlayingLoop
-      self.trackAccessDelegate?.enabled = !self.isPlayingLoop
+    }
+  }
+  
+  var audioFileURL: NSURL {
+    get {
+      let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
+      let documentsDirectory = paths[0]
+      let audioFilePath = (documentsDirectory as NSString).stringByAppendingPathComponent("\(self.uuid).caf")
+      return NSURL(fileURLWithPath: audioFilePath)
     }
   }
   
@@ -55,11 +64,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   
   override init() {
     super.init()
-    let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
-    let documentsDirectory = paths[0]
-    
-    let audioFilePath = (documentsDirectory as NSString).stringByAppendingPathComponent("audio.caf")
-    let audioFileURL = NSURL(fileURLWithPath: audioFilePath)
+
     let recordSettings = [
       AVFormatIDKey: Int(kAudioFormatLinearPCM),
       AVSampleRateKey: NSNumber(float: 44100.0),
@@ -72,11 +77,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
     self.playbackQueue.maxConcurrentOperationCount = 1
     
     do {
-      let audioSession = AVAudioSession.sharedInstance()
-      try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.DefaultToSpeaker)
-      try audioSession.setPreferredIOBufferDuration(0.001)
-      try AVAudioSession.sharedInstance().setActive(true)
-      self.audioRecorder = try AVAudioRecorder(URL: audioFileURL, settings: recordSettings)
+      self.audioRecorder = try AVAudioRecorder(URL: self.audioFileURL, settings: recordSettings)
       self.audioRecorder.delegate = self
       self.audioRecorder.prepareToRecord()
       self.audioRecorder.meteringEnabled = true
@@ -94,7 +95,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       self.loopRecordDelegate?.enabled = false
       self.trackAccessDelegate?.enabled = false
       if self.meterTimer == nil {
-        self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(AudioService.updateMeters), userInfo: nil, repeats: true)
+        self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(TrackService.updateMeters), userInfo: nil, repeats: true)
       }
       self.loopPlaybackDelegate?.loopExists = false
     }
@@ -111,7 +112,8 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       if let loopStartTime = self.loopStartTime where self.isLoopRecording {
         self.loopPoints.append(LoopPoint(
           intervalFromStart: mach_absolute_time() - loopStartTime,
-          audioTime: audioTime))
+          audioTime: audioTime,
+          audioPlayer: audioPlayer))
       }
       
       audioPlayer.currentTime = audioTime
@@ -128,11 +130,12 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
       self.meterTimer = nil
       self.meterDelegate?.dbLevel = nil
       self.trackAccessDelegate?.enabled = true
-    } else if self.audioPlayer != nil {
+    } else if let audioPlayer = self.audioPlayer {
       if let loopStartTime = self.loopStartTime where self.isLoopRecording {
         self.loopPoints.append(LoopPoint(
           intervalFromStart: mach_absolute_time() - loopStartTime,
-          audioTime: nil))
+          audioTime: nil,
+          audioPlayer: audioPlayer))
       }
       
       self.audioPlayer?.pause()
@@ -150,10 +153,11 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   }
   
   func finishLoopRecord() {
-    if let loopStartTime = self.loopStartTime {
+    if let loopStartTime = self.loopStartTime, audioPlayer = self.audioPlayer {
       self.loopPoints.append(LoopPoint(
         intervalFromStart: mach_absolute_time() - loopStartTime,
-        audioTime: nil))
+        audioTime: nil,
+        audioPlayer: audioPlayer))
     }
     self.isLoopRecording = false
     self.loopPlaybackDelegate?.loopExists = true
@@ -161,38 +165,17 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   }
   
   func startLoopPlayback() {
-    if self.loopPoints.count > 0 {
-      self.isPlayingLoop = true
-      self.startCursorTimer()
-      let loopPoints = self.loopPoints
-      self.playbackQueue.addOperationWithBlock {
-        var i = 0
-        var startTime = mach_absolute_time()
-        repeat {
-          if i < loopPoints.count {
-            let loopPoint = loopPoints[i]
-            let intervalFromStart = mach_absolute_time() - startTime
-            if  intervalFromStart >= loopPoint.intervalFromStart {
-              if let audioTime = loopPoint.audioTime {
-                self.audioPlayer?.currentTime = audioTime
-                self.audioPlayer?.play()
-              } else {
-                self.audioPlayer?.pause()
-              }
-              i += 1
-            }
-          } else {
-            i = 0
-            startTime = mach_absolute_time()
-          }
-        } while (self.isPlayingLoop)
-      }
+    self.isPlayingLoop = true
+    self.startCursorTimer()
+    self.loopService.addLoopPoints(self.loopPoints)
+    if self.loopService.currentLoopStartTime == nil {
+      self.loopService.startLoopPlayback()
     }
   }
   
   func pauseLoopPlayback() {
     self.isPlayingLoop = false
-    self.audioPlayer?.pause()
+    self.loopService.removeLoopPoints(self.loopPoints)
     self.cursorTimer?.invalidate()
     self.cursorTimer = nil
     self.playbackDelegate?.removeCursor()
@@ -212,7 +195,7 @@ class AudioService: NSObject, AVAudioRecorderDelegate {
   private func startCursorTimer() {
     if self.cursorTimer == nil {
       let interval = 0.001
-      self.cursorTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(AudioService.updateCurrentTime), userInfo: nil, repeats: true)
+      self.cursorTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(TrackService.updateCurrentTime), userInfo: nil, repeats: true)
       self.cursorTimer?.tolerance = interval * 0.10
     }
   }

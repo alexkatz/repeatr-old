@@ -10,18 +10,21 @@ import Foundation
 
 class Track {
   
-  var audioService: AudioService
+  var trackService: TrackService
   var waveformView: WaveformView
   
+  convenience init() {
+    self.init(trackService: TrackService())
+  }
   
-  init(audioService: AudioService) {
-    self.audioService = audioService
+  init(trackService: TrackService) {
+    self.trackService = trackService
     self.waveformView = WaveformView()
     
     self.waveformView.waveColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
-    self.waveformView.cursorColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimmerAlpha)
+    self.waveformView.cursorColor = Constants.greenColor
     self.waveformView.bookmarkColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
-    self.waveformView.bookmarkBaseColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimmerAlpha)
+    self.waveformView.bookmarkBaseColor = Constants.whiteColor.colorWithAlphaComponent(0.2)
   }
   
 }
