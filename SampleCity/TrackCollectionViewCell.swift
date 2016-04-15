@@ -8,15 +8,15 @@
 
 import UIKit
 
-class WaveformCollectionViewCell: UICollectionViewCell {
+class TrackCollectionViewCell: UICollectionViewCell {
   
   private lazy var label: UILabel = LayoutHelper.createInfoLabel()
-  
-  var waveformView: WaveformView? {
+
+  var track: Track? {
     didSet {
-      oldValue?.removeFromSuperview()
-      if let waveformView = self.waveformView {
-        self.addWaveformView(waveformView)
+      oldValue?.waveformView.removeFromSuperview()
+      if let track = self.track {
+        self.addWaveformView(track.waveformView)
       }
     }
   }

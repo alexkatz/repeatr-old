@@ -31,9 +31,9 @@ class LoopPlaybackView: ControlLabelView, LoopPlaybackDelegate {
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if self.trackService != nil && self.trackService!.isPlayingLoop {
-      self.trackService?.pauseLoopPlayback()
+      self.trackService?.removeFromLoopPlayback()
     } else {
-      self.trackService?.startLoopPlayback()
+      self.trackService?.addToLoopPlayback()
     }
   }
   

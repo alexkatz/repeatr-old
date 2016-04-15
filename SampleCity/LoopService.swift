@@ -19,7 +19,17 @@ class LoopService {
   
   var currentLoopStartTime: UInt64?
   
-  var masterTrack: TrackService?
+  var hasLoopPoints: Bool {
+    get {
+      return self.loopPoints.count > 0
+    }
+  }
+  
+  weak var masterTrackService: TrackService? {
+    didSet {
+      print("masterTrack: \(self.masterTrackService)")
+    }
+  }
   
   func addLoopPoints(loopPointsToAdd: [LoopPoint]) {
     var loopPoints = self.loopPoints
@@ -41,6 +51,10 @@ class LoopService {
     
     if let audioPlayer = loopPointsToRemove.first?.audioPlayer {
       self.audioPlayersPendingRemoval.append(audioPlayer)
+    }
+    
+    if self.loopPoints.count == 0 {
+      self.masterTrackService = nil
     }
   }
   

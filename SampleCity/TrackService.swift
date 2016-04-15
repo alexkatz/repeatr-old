@@ -10,17 +10,17 @@ import Foundation
 import AVFoundation
 
 class TrackService: NSObject, AVAudioRecorderDelegate {
-
-  private let playbackQueue = NSOperationQueue()
   
+  private let playbackQueue = NSOperationQueue()
   private let loopService = LoopService.sharedInstance
-
+  
   private var audioPlayer: AVAudioPlayer?
   private var audioRecorder: AVAudioRecorder!
   private var cursorTimer: NSTimer?
   private var meterTimer: NSTimer?
   private var loopPoints = [LoopPoint]()
   private var loopStartTime: UInt64!
+  private var loopEndInterval: UInt64!
   
   let uuid = NSUUID().UUIDString
   
@@ -44,6 +44,12 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
+  var loopExists = false {
+    didSet {
+      self.loopPlaybackDelegate?.loopExists = self.loopExists
+    }
+  }
+  
   var audioFileURL: NSURL {
     get {
       let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true) as [String]
@@ -53,10 +59,21 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
+  var volumeLevel: Float = 1 {
+    didSet {
+      self.audioPlayer?.volume = self.volumeLevel
+    }
+  }
+  
   weak var recordDelegate: RecordDelegate?
   weak var playbackDelegate: PlaybackDelegate?
   weak var loopRecordDelegate: LoopRecordDelegate?
-  weak var loopPlaybackDelegate: LoopPlaybackDelegate?
+  weak var loopPlaybackDelegate: LoopPlaybackDelegate? {
+    didSet {
+      self.loopPlaybackDelegate?.isPlayingLoop = self.isPlayingLoop
+      self.loopPlaybackDelegate?.enabled = self.loopExists
+    }
+  }
   weak var meterDelegate: MeterDelegate?
   weak var trackAccessDelegate: ControlLabelView?
   
@@ -64,7 +81,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   
   override init() {
     super.init()
-
+    
     let recordSettings = [
       AVFormatIDKey: Int(kAudioFormatLinearPCM),
       AVSampleRateKey: NSNumber(float: 44100.0),
@@ -130,7 +147,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
       self.meterTimer = nil
       self.meterDelegate?.dbLevel = nil
       self.trackAccessDelegate?.enabled = true
-    } else if let audioPlayer = self.audioPlayer {
+    } else if let audioPlayer = self.audioPlayer where audioPlayer.playing {
       if let loopStartTime = self.loopStartTime where self.isLoopRecording {
         self.loopPoints.append(LoopPoint(
           intervalFromStart: mach_absolute_time() - loopStartTime,
@@ -149,31 +166,40 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     self.clearLoop()
     self.isArmedForLoopRecord = false
     self.isLoopRecording = true
-    self.loopStartTime = mach_absolute_time()
+    if let currentLoopStartTime = self.loopService.currentLoopStartTime where self.loopService.masterTrackService != nil {
+      self.loopStartTime = currentLoopStartTime
+    } else {
+      self.loopStartTime = mach_absolute_time()
+    }
   }
   
-  func finishLoopRecord() {
-    if let loopStartTime = self.loopStartTime, audioPlayer = self.audioPlayer {
+  func finishLoopRecord() { // TODO: account for holding audio out past master loop length
+    if let audioPlayer = self.audioPlayer where audioPlayer.playing {
+      self.stopAudio()
+    }
+    self.loopEndInterval = mach_absolute_time() - self.loopStartTime
+    if let audioPlayer = self.audioPlayer {
       self.loopPoints.append(LoopPoint(
-        intervalFromStart: mach_absolute_time() - loopStartTime,
+        intervalFromStart: self.loopService.masterTrackService != nil ? self.loopService.masterTrackService!.loopEndInterval! : self.loopEndInterval,
         audioTime: nil,
         audioPlayer: audioPlayer))
     }
     self.isLoopRecording = false
-    self.loopPlaybackDelegate?.loopExists = true
-    self.startLoopPlayback()
+    self.loopExists = true
+    self.addToLoopPlayback()
   }
   
-  func startLoopPlayback() {
+  func addToLoopPlayback() {
     self.isPlayingLoop = true
     self.startCursorTimer()
-    self.loopService.addLoopPoints(self.loopPoints)
-    if self.loopService.currentLoopStartTime == nil {
+    if !self.loopService.hasLoopPoints {
+      self.loopService.masterTrackService = self
       self.loopService.startLoopPlayback()
     }
+    self.loopService.addLoopPoints(self.loopPoints)
   }
   
-  func pauseLoopPlayback() {
+  func removeFromLoopPlayback() {
     self.isPlayingLoop = false
     self.loopService.removeLoopPoints(self.loopPoints)
     self.cursorTimer?.invalidate()
@@ -201,7 +227,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   }
   
   private func clearLoop() {
-    self.pauseLoopPlayback()
+    self.removeFromLoopPlayback()
     self.isLoopRecording = false
     self.loopPoints.removeAll()
   }

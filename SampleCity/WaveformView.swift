@@ -22,6 +22,8 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   private var activeTouch: UITouch?
   private var uncommittedBookmarkTime: UInt64?
   private var isPlacingBookmark = false
+  private var didInitialize = false
+  private var hasAudio = false
   
   private var uncommittedBookmarkView: BookmarkView? {
     didSet {
@@ -76,7 +78,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   private lazy var label: UILabel = LayoutHelper.createInfoLabel()
   
-  var trackService: TrackService?
+  private var trackService: TrackService
   
   var audioURL: NSURL? {
     didSet {
@@ -116,10 +118,11 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   var dbLevel: Float? {
     didSet {
-      if let dbLevel = self.dbLevel, trackService = self.trackService {
+      if let dbLevel = self.dbLevel {
+        self.hasAudio = true
         self.label.removeFromSuperview()
         self.meterView.alpha = 1
-        let noiseFloor = 0 - trackService.noiseFloor
+        let noiseFloor = 0 - self.trackService.noiseFloor
         let heightPercent = CGFloat((noiseFloor - abs(dbLevel)) / noiseFloor)
         self.meterHeightConstraint?.constant = heightPercent > 0 ? (self.bounds.height / 2) * heightPercent : 0
       } else {
@@ -152,12 +155,14 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   // MARK: inits
   
-  override init(frame: CGRect) {
-    super.init(frame: frame)
+  required init(trackService: TrackService) {
+    self.trackService = trackService
+    super.init(frame: CGRect.zero)
     self.setup()
   }
-  
+
   required init?(coder aDecoder: NSCoder) {
+    self.trackService = TrackService()
     super.init(coder: aDecoder)
     self.setup()
   }
@@ -167,6 +172,22 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   override func layoutSubviews() {
     super.layoutSubviews()
     self.drawWaveform()
+    
+    self.label.removeFromSuperview()
+    self.label.alpha = 0
+    
+    if !self.didInitialize && !self.hasAudio {
+      self.didInitialize = true
+      LayoutHelper.addInfoLabel(self.label, toView: self)
+      self.label.transform = CGAffineTransformMakeScale(0.3, 0.3)
+      self.label.alpha = 1
+      UIView.animateWithDuration(Constants.defaultAnimationDuration) {
+        self.label.transform = CGAffineTransformMakeScale(1, 1)
+      }
+    } else if !self.hasAudio {
+      LayoutHelper.addInfoLabel(self.label, toView: self)
+      self.label.alpha = 1
+    }
     
     for bookmarkView in self.bookmarkViews {
       if let percentX = bookmarkView.percentX where bookmarkView.bounds.height != self.bounds.height {
@@ -188,7 +209,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       }
     }
     
-    if let location = self.activeTouch?.locationInView(self), audioService = self.trackService {
+    if let location = self.activeTouch?.locationInView(self) {
       if self.bookmarkBaseView.frame.contains(location) && self.bookmarkBaseView.alpha == 1 {
         self.bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
@@ -197,16 +218,16 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           let bookmarkView = self.createBookmarkAtLocation(location)
           self.uncommittedBookmarkView = bookmarkView
         }
-      } else if !audioService.isPlayingLoop {
+      } else if !self.trackService.isPlayingLoop {
         if self.bookmarkViews.count == 0 {
           let percent = Double(location.x / self.bounds.width)
-          audioService.playAudioWithStartPercent(percent)
+          self.trackService.playAudioWithStartPercent(percent)
         } else {
           let currentPercent = CGFloat(location.x / self.bounds.width)
           if let bookmarkView = self.bookmarkViews.filter({ $0.percentX < currentPercent }).last, startPercent = bookmarkView.percentX {
-            audioService.playAudioWithStartPercent(Double(startPercent))
+            self.trackService.playAudioWithStartPercent(Double(startPercent))
           } else {
-            audioService.playAudioWithStartPercent(0)
+            self.trackService.playAudioWithStartPercent(0)
           }
         }
       }
@@ -227,9 +248,9 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if let audioService = self.trackService where self.activeTouch != nil && touches.contains(self.activeTouch!) {
-      if !audioService.isPlayingLoop {
-        audioService.stopAudio()
+    if self.activeTouch != nil && touches.contains(self.activeTouch!) {
+      if !self.trackService.isPlayingLoop {
+        self.trackService.stopAudio()
       }
       
       self.activeTouch = nil
@@ -310,8 +331,6 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     let attributedString = NSMutableAttributedString(string: introText)
     attributedString.addAttributes([NSForegroundColorAttributeName: Constants.redColor], range: range)
     self.label.attributedText = attributedString
-    LayoutHelper.addInfoLabel(self.label, toView: self)
-    self.setNeedsLayout()
   }
   
   private func drawWaveform() {
@@ -329,41 +348,37 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   private func plotWithSamples(samples: NSData, maxSample: Float, imageHeight: Int, done: ((UIImage?) -> ())?) {
-    if let audioService = self.trackService {
-      let s = UnsafePointer<Float>(samples.bytes)
-      let sampleCount = samples.length / 4
-      let imageSize = CGSize(width: sampleCount, height: imageHeight)
-      UIGraphicsBeginImageContext(imageSize)
-      let context = UIGraphicsGetCurrentContext()
-      
-      CGContextSetShouldAntialias(context, false)
-      CGContextSetAlpha(context, 1)
-      CGContextSetLineWidth(context, 1)
-      CGContextSetStrokeColorWithColor(context, self.waveColor.CGColor)
-      
-      let sampleAdjustmentFactor = Float(imageHeight) / (maxSample - audioService.noiseFloor) / 2
-      let halfImageHeight = Float(imageHeight) / 2
-      
-      for i in 0..<sampleCount {
-        let sample: Float = s[i]
-        var pixels = (sample - audioService.noiseFloor) * sampleAdjustmentFactor
-        if pixels == 0 {
-          pixels = 1
-        }
-        
-        CGContextMoveToPoint(context, CGFloat(i), CGFloat(halfImageHeight - pixels))
-        CGContextAddLineToPoint(context, CGFloat(i), CGFloat(halfImageHeight + pixels))
-        CGContextStrokePath(context)
+    let s = UnsafePointer<Float>(samples.bytes)
+    let sampleCount = samples.length / 4
+    let imageSize = CGSize(width: sampleCount, height: imageHeight)
+    UIGraphicsBeginImageContext(imageSize)
+    let context = UIGraphicsGetCurrentContext()
+    
+    CGContextSetShouldAntialias(context, false)
+    CGContextSetAlpha(context, 1)
+    CGContextSetLineWidth(context, 1)
+    CGContextSetStrokeColorWithColor(context, self.waveColor.CGColor)
+    
+    let sampleAdjustmentFactor = Float(imageHeight) / (maxSample - self.trackService.noiseFloor) / 2
+    let halfImageHeight = Float(imageHeight) / 2
+    
+    for i in 0..<sampleCount {
+      let sample: Float = s[i]
+      var pixels = (sample - self.trackService.noiseFloor) * sampleAdjustmentFactor
+      if pixels == 0 {
+        pixels = 1
       }
       
-      done?(UIGraphicsGetImageFromCurrentImageContext())
-    } else {
-      done?(nil)
+      CGContextMoveToPoint(context, CGFloat(i), CGFloat(halfImageHeight - pixels))
+      CGContextAddLineToPoint(context, CGFloat(i), CGFloat(halfImageHeight + pixels))
+      CGContextStrokePath(context)
     }
+    
+    done?(UIGraphicsGetImageFromCurrentImageContext())
   }
   
   private func downsampleAssetForWidth(widthInPixels: Int, done: ((NSData?, Float?) -> ())?) {
-    if let asset = self.asset, assetTrack = self.assetTrack, audioService = self.trackService where self.totalSamples > 0 && widthInPixels > 0 {
+    if let asset = self.asset, assetTrack = self.assetTrack where self.totalSamples > 0 && widthInPixels > 0 {
       do {
         let reader = try AVAssetReader(asset: asset)
         reader.timeRange = CMTimeRangeMake(CMTime(seconds: 0, preferredTimescale: asset.duration.timescale), CMTime(seconds: Double(self.totalSamples), preferredTimescale: asset.duration.timescale))
@@ -379,7 +394,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         reader.addOutput(output)
         
         let bytesPerInputSample = 2
-        var sampleMax = audioService.noiseFloor
+        var sampleMax = self.trackService.noiseFloor
         var tally = Float(0)
         var tallyCount = Float(0)
         let downsampleFactor = Int(self.totalSamples / widthInPixels)
@@ -399,7 +414,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
             
             for i in 0..<sampleCount {
               let rawData = Float(samples[i])
-              var sample = self.minMaxOrValue(self.decibel(rawData), min: Float(audioService.noiseFloor), max: 0)
+              var sample = self.minMaxOrValue(self.decibel(rawData), min: Float(self.trackService.noiseFloor), max: 0)
               tally += sample
               tallyCount += 1
               

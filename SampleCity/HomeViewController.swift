@@ -13,6 +13,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   
   private var selectedWaveformView: WaveformView?
   private var tracks = [Track]()
+  private var didInitialize = false
   
   @IBOutlet weak var recordView: RecordView!
   @IBOutlet weak var collectionView: UICollectionView!
@@ -65,7 +66,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     self.trackAccessView.delegate = self
     
-    self.collectionView.registerClass(WaveformCollectionViewCell.self, forCellWithReuseIdentifier: String(WaveformCollectionViewCell))
+    self.collectionView.registerClass(TrackCollectionViewCell.self, forCellWithReuseIdentifier: String(TrackCollectionViewCell))
     self.collectionView.delegate = self
     self.collectionView.dataSource = self
     self.scrollEnabled = false
@@ -87,7 +88,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     coordinator.animateAlongsideTransition({ context in
       self.setCollectionViewLayoutWithSize(newCollectionViewSize)
       self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: self.pageControl.currentPage, inSection: 0), atScrollPosition: .CenteredHorizontally, animated: false)
-      }, completion: nil)
+      }, completion: { finished in
+        if let cell = self.collectionView.visibleCells().first as? TrackCollectionViewCell, indexPath = self.collectionView.indexPathForCell(cell) {
+          self.updateCell(cell, atIndexPath: indexPath)
+        }
+    })
   }
   
   override func prefersStatusBarHidden() -> Bool {
@@ -98,7 +103,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   
   func createTrack() {
     let newTrack = Track()
-    if let cell = self.collectionView.visibleCells().first as? WaveformCollectionViewCell {
+    if let cell = self.collectionView.visibleCells().first as? TrackCollectionViewCell {
       self.selectedWaveformView = newTrack.waveformView
       self.setTrack(newTrack, forCell: cell)
     }
@@ -114,7 +119,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     self.collectionView.setCollectionViewLayout(layout, animated: animated)
   }
   
-  private func setTrack(track: Track, forCell cell: WaveformCollectionViewCell) {
+  private func setTrack(track: Track, forCell cell: TrackCollectionViewCell) {
     track.trackService.recordDelegate = self.recordView
     track.trackService.loopRecordDelegate = self.loopRecordView
     track.trackService.loopPlaybackDelegate = self.loopPlaybackView
@@ -126,24 +131,22 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     self.loopRecordView.trackService = track.trackService
     self.loopPlaybackView.trackService = track.trackService
     
-    cell.waveformView = track.waveformView
-    cell.waveformView?.trackService = track.trackService
-    
-    // TODO: change state of loopPlaybackView based on whether current track is playing
+    cell.track = track
   }
   
-  private func updateCell(cell: WaveformCollectionViewCell, atIndexPath indexPath: NSIndexPath) {
+  private func updateCell(cell: TrackCollectionViewCell, atIndexPath indexPath: NSIndexPath) {
     if indexPath.item < self.tracks.count {
       let track = self.tracks[indexPath.item]
       self.setTrack(track, forCell: cell)
       self.selectedWaveformView = track.waveformView
       
-//      if self.tracks.count == 1 {
-//        self.selectedWaveformView?.enabled = true
-//      }
+      if self.tracks.count == 1 && !self.didInitialize {
+        self.selectedWaveformView?.enabled = true
+        self.didInitialize = true
+      }
       cell.title = nil
     } else {
-      cell.waveformView = nil
+      cell.track = nil
       cell.title = "CREATE A NEW TRACK, PUNK."
     }
   }
@@ -155,7 +158,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   }
   
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(WaveformCollectionViewCell), forIndexPath: indexPath) as! WaveformCollectionViewCell
+    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(TrackCollectionViewCell), forIndexPath: indexPath) as! TrackCollectionViewCell
     self.updateCell(cell, atIndexPath: indexPath)
     return cell
   }
@@ -167,7 +170,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   }
   
   func collectionView(View: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-    if let visibleCell = collectionView.visibleCells().first as? WaveformCollectionViewCell, waveformView = visibleCell.waveformView, indexPath = collectionView.indexPathForCell(visibleCell) where !waveformView.enabled {
+    if let visibleCell = collectionView.visibleCells().first as? TrackCollectionViewCell, waveformView = visibleCell.track?.waveformView, indexPath = collectionView.indexPathForCell(visibleCell) where !waveformView.enabled {
       self.updateCell(visibleCell, atIndexPath: indexPath)
     }
   }
