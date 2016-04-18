@@ -13,9 +13,14 @@ class Track: AudioVolumeDelegate {
   var trackService: TrackService
   var waveformView: WaveformView
   
-  var volumeLevel: Float = 1 {
-    didSet {
-      self.trackService.volumeLevel = self.volumeLevel
+  let uuid = NSUUID().UUIDString
+  
+  var volumeLevel: Float {
+    get {
+      return self.trackService.volumeLevel
+    }
+    set {
+      self.trackService.volumeLevel = newValue
     }
   }
   

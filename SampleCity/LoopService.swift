@@ -25,11 +25,8 @@ class LoopService {
     }
   }
   
-  weak var masterTrackService: TrackService? {
-    didSet {
-      print("masterTrack: \(self.masterTrackService)")
-    }
-  }
+  weak var masterTrackService: TrackService?
+  weak var currentlyRecordingTrackService: TrackService?
   
   func addLoopPoints(loopPointsToAdd: [LoopPoint]) {
     var loopPoints = self.loopPoints

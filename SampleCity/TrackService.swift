@@ -59,9 +59,12 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
-  var volumeLevel: Float = 1 {
-    didSet {
-      self.audioPlayer?.volume = self.volumeLevel
+  var volumeLevel: Float {
+    get {
+      return self.audioPlayer != nil ? self.audioPlayer!.volume : 0
+    }
+    set {
+      self.audioPlayer?.volume = newValue
     }
   }
   
@@ -173,10 +176,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     }
   }
   
-  func finishLoopRecord() { // TODO: account for holding audio out past master loop length
-    if let audioPlayer = self.audioPlayer where audioPlayer.playing {
-      self.stopAudio()
-    }
+  func finishLoopRecord() { // TODO: account for holding audio out past master loop length -- maybe it doesn't matter
     self.loopEndInterval = mach_absolute_time() - self.loopStartTime
     if let audioPlayer = self.audioPlayer {
       self.loopPoints.append(LoopPoint(

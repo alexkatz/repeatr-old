@@ -11,7 +11,7 @@ import AVFoundation
 
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, TrackSelectorDelegate {
   
-  private var selectedWaveformView: WaveformView?
+  private var selectedCell: TrackCollectionViewCell?
   private var tracks = [Track]()
   private var didInitialize = false
   
@@ -27,7 +27,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
       self.collectionView.scrollEnabled = self.scrollEnabled
       UIView.animateWithDuration(Constants.defaultAnimationDuration, delay: 0, options: [.AllowUserInteraction, .BeginFromCurrentState], animations: {
         self.pageControl.alpha = self.scrollEnabled ? 1 : 0
-        self.selectedWaveformView?.enabled = !self.scrollEnabled
+        self.selectedCell?.active = !self.scrollEnabled
         }, completion: nil)
     }
   }
@@ -104,14 +104,19 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   func createTrack() {
     let newTrack = Track()
     if let cell = self.collectionView.visibleCells().first as? TrackCollectionViewCell {
-      self.selectedWaveformView = newTrack.waveformView
-      self.setTrack(newTrack, forCell: cell)
+      self.selectedCell = cell
     }
     
     self.collectionView.performBatchUpdates({
       self.tracks.append(newTrack)
       self.collectionView.insertItemsAtIndexPaths([NSIndexPath(forItem: self.pageControl.numberOfPages - 1, inSection: 0)])
-      }, completion: nil)
+      }, completion: { finished in
+        if finished {
+          if let selectedCell = self.selectedCell {
+            self.setTrack(newTrack, forCell: selectedCell)
+          }
+        }
+    })
   }
   
   private func setCollectionViewLayoutWithSize(size: CGSize, animated: Bool = false) {
@@ -138,10 +143,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     if indexPath.item < self.tracks.count {
       let track = self.tracks[indexPath.item]
       self.setTrack(track, forCell: cell)
-      self.selectedWaveformView = track.waveformView
+      self.selectedCell = cell
       
       if self.tracks.count == 1 && !self.didInitialize {
-        self.selectedWaveformView?.enabled = true
+        self.selectedCell?.active = true
         self.didInitialize = true
       }
       cell.title = nil
@@ -170,7 +175,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   }
   
   func collectionView(View: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-    if let visibleCell = collectionView.visibleCells().first as? TrackCollectionViewCell, waveformView = visibleCell.track?.waveformView, indexPath = collectionView.indexPathForCell(visibleCell) where !waveformView.enabled {
+    if let visibleCell = collectionView.visibleCells().first as? TrackCollectionViewCell, indexPath = collectionView.indexPathForCell(visibleCell) where !visibleCell.active && visibleCell != self.selectedCell {
       self.updateCell(visibleCell, atIndexPath: indexPath)
     }
   }
