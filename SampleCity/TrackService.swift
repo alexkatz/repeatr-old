@@ -19,8 +19,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   private var cursorTimer: NSTimer?
   private var meterTimer: NSTimer?
   private var loopPoints = [LoopPoint]()
-  private var loopStartTime: UInt64!
-  private var loopEndInterval: UInt64!
+  private var loopStartTime: UInt64?
   
   let uuid = NSUUID().UUIDString
   
@@ -129,9 +128,9 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
         self.startLoopRecord()
       }
       
-      if let loopStartTime = self.loopStartTime where self.isLoopRecording {
+      if self.isLoopRecording {
         self.loopPoints.append(LoopPoint(
-          intervalFromStart: mach_absolute_time() - loopStartTime,
+          intervalFromStart: mach_absolute_time() - self.getLoopStartTime(),
           audioTime: audioTime,
           audioPlayer: audioPlayer))
       }
@@ -151,9 +150,9 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
       self.meterDelegate?.dbLevel = nil
       self.trackAccessDelegate?.enabled = true
     } else if let audioPlayer = self.audioPlayer where audioPlayer.playing {
-      if let loopStartTime = self.loopStartTime where self.isLoopRecording {
+      if self.isLoopRecording {
         self.loopPoints.append(LoopPoint(
-          intervalFromStart: mach_absolute_time() - loopStartTime,
+          intervalFromStart: mach_absolute_time() - self.getLoopStartTime(),
           audioTime: nil,
           audioPlayer: audioPlayer))
       }
@@ -169,18 +168,16 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     self.clearLoop()
     self.isArmedForLoopRecord = false
     self.isLoopRecording = true
-    if let currentLoopStartTime = self.loopService.currentLoopStartTime where self.loopService.masterTrackService != nil {
-      self.loopStartTime = currentLoopStartTime
-    } else {
+    
+    if self.loopService.currentLoopStartTime == nil {
       self.loopStartTime = mach_absolute_time()
     }
   }
   
-  func finishLoopRecord() { // TODO: account for holding audio out past master loop length -- maybe it doesn't matter
-    self.loopEndInterval = mach_absolute_time() - self.loopStartTime
+  func finishLoopRecord() {
     if let audioPlayer = self.audioPlayer {
       self.loopPoints.append(LoopPoint(
-        intervalFromStart: self.loopService.masterTrackService != nil ? self.loopService.masterTrackService!.loopEndInterval! : self.loopEndInterval,
+        intervalFromStart: mach_absolute_time() - self.getLoopStartTime(),
         audioTime: nil,
         audioPlayer: audioPlayer))
     }
@@ -192,11 +189,16 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   func addToLoopPlayback() {
     self.isPlayingLoop = true
     self.startCursorTimer()
+    
     if !self.loopService.hasLoopPoints {
       self.loopService.masterTrackService = self
+    }
+    
+    self.loopService.addLoopPoints(self.loopPoints)
+    
+    if !self.loopService.isPlayingLoop {
       self.loopService.startLoopPlayback()
     }
-    self.loopService.addLoopPoints(self.loopPoints)
   }
   
   func removeFromLoopPlayback() {
@@ -230,6 +232,10 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     self.removeFromLoopPlayback()
     self.isLoopRecording = false
     self.loopPoints.removeAll()
+  }
+  
+  private func getLoopStartTime() -> UInt64 {
+    return self.loopStartTime ?? self.loopService.currentLoopStartTime!
   }
   
   // MARK: AVAudioRecorderDelegate

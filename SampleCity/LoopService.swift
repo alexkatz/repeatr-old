@@ -13,10 +13,11 @@ class LoopService {
   
   private let playbackQueue = NSOperationQueue()
   private var loopPoints = [LoopPoint]()
-  private var isPlayingLoop = false
+  private var activeLoopPoints = [LoopPoint]()
   static let sharedInstance = LoopService()
   private var audioPlayersPendingRemoval = [AVAudioPlayer]()
   
+  var isPlayingLoop = false
   var currentLoopStartTime: UInt64?
   
   var hasLoopPoints: Bool {
@@ -51,7 +52,7 @@ class LoopService {
     }
     
     if self.loopPoints.count == 0 {
-      self.masterTrackService = nil
+      self.pauseLoopPlayback()
     }
   }
   
@@ -67,19 +68,23 @@ class LoopService {
           self.pauseLoopPlayback()
         } else if i < loopPoints.count {
           let loopPoint = loopPoints[i]
-          let intervalFromStart = mach_absolute_time() - self.currentLoopStartTime!
-          if  intervalFromStart >= loopPoint.intervalFromStart {
-            if let audioTime = loopPoint.audioTime {
-              if self.audioPlayersPendingRemoval.indexOf(loopPoint.audioPlayer) == nil {
-                loopPoint.audioPlayer.currentTime = audioTime
-                loopPoint.audioPlayer.play()
+          if let currentLoopStartTime = self.currentLoopStartTime {
+            let intervalFromStart = mach_absolute_time() - currentLoopStartTime
+            if  intervalFromStart >= loopPoint.intervalFromStart {
+              if let audioTime = loopPoint.audioTime {
+                if self.audioPlayersPendingRemoval.indexOf(loopPoint.audioPlayer) == nil {
+                  loopPoint.audioPlayer.currentTime = audioTime
+                  loopPoint.audioPlayer.play()
+                } else {
+                  loopPoint.audioPlayer.pause()
+                }
               } else {
                 loopPoint.audioPlayer.pause()
               }
-            } else {
-              loopPoint.audioPlayer.pause()
+              i += 1
             }
-            i += 1
+          } else {
+            break
           }
         } else {
           i = 0
@@ -91,13 +96,13 @@ class LoopService {
       for loopPoint in loopPoints {
         loopPoint.audioPlayer.pause()
       }
+      self.currentLoopStartTime = nil
+      self.masterTrackService = nil
     }
   }
   
   func pauseLoopPlayback() {
     self.isPlayingLoop = false
-    self.currentLoopStartTime = nil
   }
-  
   
 }
