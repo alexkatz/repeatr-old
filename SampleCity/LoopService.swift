@@ -11,10 +11,11 @@ import AVFoundation
 
 class LoopService {
   
+  static let sharedInstance = LoopService()
+  
   private let playbackQueue = NSOperationQueue()
   private var loopPoints = [LoopPoint]()
-  private var activeLoopPoints = [LoopPoint]()
-  static let sharedInstance = LoopService()
+  private var activeTrackServices = [TrackService]()
   private var audioPlayersPendingRemoval = [AVAudioPlayer]()
   
   var isPlayingLoop = false
@@ -26,18 +27,27 @@ class LoopService {
     }
   }
   
+  var muteAll = false {
+    didSet {
+      for trackService in self.activeTrackServices {
+        trackService.muted = self.muteAll
+      }
+    }
+  }
+  
   weak var masterTrackService: TrackService?
   weak var currentlyRecordingTrackService: TrackService?
   
-  func addLoopPoints(loopPointsToAdd: [LoopPoint]) {
+  func addLoopPoints(loopPointsToAdd: [LoopPoint], trackService: TrackService) {
     var loopPoints = self.loopPoints
     loopPoints += loopPointsToAdd
     self.loopPoints = loopPoints.sort { a, b in
       a.intervalFromStart < b.intervalFromStart
     }
+    self.activeTrackServices.append(trackService)
   }
   
-  func removeLoopPoints(loopPointsToRemove: [LoopPoint]) {
+  func removeLoopPoints(loopPointsToRemove: [LoopPoint], trackService: TrackService) {
     self.loopPoints = self.loopPoints.filter { loopPoint in
       for loopPointToRemove in loopPointsToRemove {
         if loopPointToRemove.uuid == loopPoint.uuid {
@@ -53,6 +63,10 @@ class LoopService {
     
     if self.loopPoints.count == 0 {
       self.pauseLoopPlayback()
+    }
+    
+    if let index = self.activeTrackServices.indexOf(trackService) {
+      self.activeTrackServices.removeAtIndex(index)
     }
   }
   

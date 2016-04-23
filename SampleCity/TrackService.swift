@@ -20,6 +20,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   private var meterTimer: NSTimer?
   private var loopPoints = [LoopPoint]()
   private var loopStartTime: UInt64?
+  private var currentVolumeLevel: Float = 0
   
   let uuid = NSUUID().UUIDString
   
@@ -55,6 +56,17 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
       let documentsDirectory = paths[0]
       let audioFilePath = (documentsDirectory as NSString).stringByAppendingPathComponent("\(self.uuid).caf")
       return NSURL(fileURLWithPath: audioFilePath)
+    }
+  }
+  
+  var muted = false {
+    didSet {
+      if self.muted {
+        self.currentVolumeLevel = self.volumeLevel;
+        self.volumeLevel = 0
+      } else {
+        self.volumeLevel = self.currentVolumeLevel
+      }
     }
   }
   
@@ -194,7 +206,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
       self.loopService.masterTrackService = self
     }
     
-    self.loopService.addLoopPoints(self.loopPoints)
+    self.loopService.addLoopPoints(self.loopPoints, trackService: self)
     
     if !self.loopService.isPlayingLoop {
       self.loopService.startLoopPlayback()
@@ -203,7 +215,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   
   func removeFromLoopPlayback() {
     self.isPlayingLoop = false
-    self.loopService.removeLoopPoints(self.loopPoints)
+    self.loopService.removeLoopPoints(self.loopPoints, trackService: self)
     self.cursorTimer?.invalidate()
     self.cursorTimer = nil
     self.playbackDelegate?.removeCursor()

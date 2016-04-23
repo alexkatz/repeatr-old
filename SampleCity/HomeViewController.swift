@@ -21,6 +21,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   @IBOutlet weak var loopRecordView: LoopRecordView!
   @IBOutlet weak var loopPlaybackView: LoopPlaybackView!
   @IBOutlet weak var trackAccessView: TrackAccessView!
+  @IBOutlet weak var muteAllView: MuteAllView!
   
   var scrollEnabled = false {
     didSet {
