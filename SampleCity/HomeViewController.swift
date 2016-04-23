@@ -22,6 +22,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   @IBOutlet weak var loopPlaybackView: LoopPlaybackView!
   @IBOutlet weak var trackAccessView: TrackAccessView!
   @IBOutlet weak var muteAllView: MuteAllView!
+  @IBOutlet weak var volumeView: VolumeControlView!
   
   var scrollEnabled = false {
     didSet {
@@ -136,6 +137,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     self.recordView.trackService = track.trackService
     self.loopRecordView.trackService = track.trackService
     self.loopPlaybackView.trackService = track.trackService
+    self.volumeView.delegate = track
     
     cell.track = track
   }

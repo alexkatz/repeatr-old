@@ -40,7 +40,7 @@
                                 <cells/>
                             </collectionView>
                             <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="Trg-E8-CHU">
-                                <rect key="frame" x="281" y="431" width="39" height="37"/>
+                                <rect key="frame" x="281" y="387" width="39" height="37"/>
                             </pageControl>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2bZ-Jz-ynt" userLabel="TrackAccessView" customClass="TrackAccessView" customModule="SampleCity" customModuleProvider="target">
                                 <rect key="frame" x="450" y="512" width="150" height="88"/>
@@ -54,10 +54,14 @@
                                     <constraint firstAttribute="height" constant="88" id="1VI-m1-e0I"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="odH-Tb-XR5" userLabel="VolumeView" customClass="VolumeControlView" customModule="SampleCity" customModuleProvider="target">
+                                <rect key="frame" x="150" y="424" width="450" height="88"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="2bZ-Jz-ynt" firstAttribute="height" secondItem="Wam-Cc-8g8" secondAttribute="height" id="0fJ-hQ-Yv2"/>
+                            <constraint firstItem="odH-Tb-XR5" firstAttribute="top" secondItem="fgQ-z9-we1" secondAttribute="top" id="17c-2g-SJm"/>
                             <constraint firstItem="wbk-pc-hIQ" firstAttribute="top" secondItem="ccG-IV-MjF" secondAttribute="bottom" constant="88" id="18k-ZT-hG0"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="1h0-Qx-K5f"/>
                             <constraint firstItem="OSO-1Z-YHT" firstAttribute="width" secondItem="wbk-pc-hIQ" secondAttribute="width" id="27I-ct-fF0"/>
@@ -68,11 +72,14 @@
                             <constraint firstItem="OSO-1Z-YHT" firstAttribute="height" secondItem="wbk-pc-hIQ" secondAttribute="height" id="6Uv-f3-NAJ"/>
                             <constraint firstItem="Wam-Cc-8g8" firstAttribute="height" secondItem="OSO-1Z-YHT" secondAttribute="height" id="9j1-Lb-S6Q"/>
                             <constraint firstItem="ccG-IV-MjF" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Dlv-VH-sVc"/>
+                            <constraint firstItem="odH-Tb-XR5" firstAttribute="leading" secondItem="fgQ-z9-we1" secondAttribute="trailing" id="GE0-bB-k9w"/>
                             <constraint firstItem="OSO-1Z-YHT" firstAttribute="leading" secondItem="wbk-pc-hIQ" secondAttribute="trailing" id="Nf1-Mk-AQg"/>
                             <constraint firstItem="fgQ-z9-we1" firstAttribute="bottom" secondItem="ccG-IV-MjF" secondAttribute="bottom" id="Ntt-kv-UDQ"/>
                             <constraint firstItem="OSO-1Z-YHT" firstAttribute="bottom" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="PSZ-Cs-Qwm"/>
                             <constraint firstItem="Wam-Cc-8g8" firstAttribute="leading" secondItem="OSO-1Z-YHT" secondAttribute="trailing" id="Pfs-jB-gdj"/>
-                            <constraint firstItem="Trg-E8-CHU" firstAttribute="bottom" secondItem="ccG-IV-MjF" secondAttribute="bottom" constant="44" id="ZCf-EO-pXR"/>
+                            <constraint firstItem="Trg-E8-CHU" firstAttribute="bottom" secondItem="ccG-IV-MjF" secondAttribute="bottom" id="ZCf-EO-pXR"/>
+                            <constraint firstItem="odH-Tb-XR5" firstAttribute="height" secondItem="fgQ-z9-we1" secondAttribute="height" id="cwY-PV-ifb"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="odH-Tb-XR5" secondAttribute="trailing" constant="-20" id="dcW-K9-E0d"/>
                             <constraint firstItem="Wam-Cc-8g8" firstAttribute="bottom" secondItem="OSO-1Z-YHT" secondAttribute="bottom" id="g6F-z4-o0E"/>
                             <constraint firstItem="Trg-E8-CHU" firstAttribute="centerX" secondItem="ccG-IV-MjF" secondAttribute="centerX" id="i1d-am-8Nm"/>
                             <constraint firstItem="2bZ-Jz-ynt" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="igV-6M-ugy"/>
@@ -109,11 +116,12 @@
                         <outlet property="pageControl" destination="Trg-E8-CHU" id="Nb9-13-ET9"/>
                         <outlet property="recordView" destination="wbk-pc-hIQ" id="pq4-e5-rbp"/>
                         <outlet property="trackAccessView" destination="2bZ-Jz-ynt" id="ehC-xy-svT"/>
+                        <outlet property="volumeView" destination="odH-Tb-XR5" id="FGJ-pd-yjJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1857" y="-655"/>
+            <point key="canvasLocation" x="-1692" y="-655"/>
         </scene>
     </scenes>
 </document>
