@@ -24,6 +24,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   private var isPlacingBookmark = false
   private var didInitialize = false
   private var hasAudio = false
+  private var currentBounds: CGRect!
   
   private var uncommittedBookmarkView: BookmarkView? {
     didSet {
@@ -54,6 +55,8 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         self.totalSamples = Int(audioStreamBasicDescription.mSampleRate * (Double(self.asset!.duration.value) / Double(self.asset!.duration.timescale)))
         
         self.setNeedsLayout()
+        self.drawWaveform()
+        self.currentBounds = self.bounds
         UIView.animateWithDuration(Constants.defaultAnimationDuration) {
           self.plotImageView.alpha = 1
           self.bookmarkBaseView.alpha = 1
@@ -133,7 +136,10 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    self.drawWaveform()
+    if self.bounds != self.currentBounds {
+      self.drawWaveform()
+      self.currentBounds = self.bounds
+    }
     
     self.label.removeFromSuperview()
     self.label.alpha = 0

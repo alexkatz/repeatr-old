@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Track: AudioVolumeDelegate {
+class Track: AudioVolumeDelegate, Equatable {
   
   var trackService: TrackService
   var waveformView: WaveformView
@@ -41,4 +41,8 @@ class Track: AudioVolumeDelegate {
     self.trackService.meterDelegate = self.waveformView
   }
   
+}
+
+func ==(lhs: Track, rhs: Track) -> Bool {
+  return lhs.uuid == rhs.uuid
 }

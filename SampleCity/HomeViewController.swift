@@ -12,6 +12,8 @@ import AVFoundation
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, TrackSelectorDelegate {
   
   private var tracks = [Track]()
+  private var selectedTrack: Track?
+  private var didInitialize = false
   
   private lazy var newTrackView: UIView = self.createNewTrackView()
   
@@ -115,6 +117,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   
   func onTrackSelected(notification: NSNotification) {
     if let selectedUUID = notification.userInfo?[Constants.trackServiceUUIDKey] as? String {
+      
+      //if a track is currently armed for loop recording,
+      
+      
       for cell in self.visibleCells() {
         if cell.track?.trackService.uuid == selectedUUID {
           if !cell.selectedForLoopRecord {
@@ -145,7 +151,10 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     cell.track?.trackService.trackAccessDelegate = self.trackAccessView
     self.recordView.trackService = cell.track?.trackService
     self.loopRecordView.trackService = cell.track?.trackService
+    
     cell.selectedForLoopRecord = true
+    self.selectedTrack = cell.track
+    
     for visibleCell in self.visibleCells() {
       visibleCell.selectedForLoopRecord = visibleCell == cell
     }
@@ -167,7 +176,14 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(TrackCollectionViewCell), forIndexPath: indexPath) as! TrackCollectionViewCell
     cell.track = self.tracks[indexPath.item]
     cell.active = !self.isSelectingTrack
-    self.selectCell(cell)
+    
+    cell.selectedForLoopRecord = cell.track == self.selectedTrack
+    
+    if !self.didInitialize && self.tracks.count == 1 {
+      self.selectCell(cell)
+      self.didInitialize = true
+    }
+    
     return cell
   }
   
