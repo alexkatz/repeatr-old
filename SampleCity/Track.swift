@@ -35,7 +35,10 @@ class Track: AudioVolumeDelegate {
     self.waveformView.waveColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
     self.waveformView.cursorColor = Constants.greenColor
     self.waveformView.bookmarkColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
-    self.waveformView.bookmarkBaseColor = Constants.whiteColor.colorWithAlphaComponent(0.2)
+    self.waveformView.bookmarkBaseColor = Constants.whiteColor.colorWithAlphaComponent(0.0)
+    
+    self.trackService.playbackDelegate = self.waveformView
+    self.trackService.meterDelegate = self.waveformView
   }
   
 }

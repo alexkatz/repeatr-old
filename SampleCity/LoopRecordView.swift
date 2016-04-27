@@ -12,38 +12,9 @@ class LoopRecordView: ControlLabelView, LoopRecordDelegate {
   
   private let loopText = "LOOP"
   
-  var isArmed = false {
-    didSet {
-      if self.isArmed {
-        self.isWhite = false
-        let interval = 0.35
-        self.armedTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(LoopRecordView.toggleArmed), userInfo: nil, repeats: true)
-        self.armedTimer?.tolerance = interval * 0.10
-      } else {
-        self.armedTimer?.invalidate()
-        self.isWhite = true
-      }
-    }
-  }
+  weak var parent: HomeViewController?
   
-  var isLoopRecording = false {
-    didSet {
-      if self.isLoopRecording {
-        self.armedTimer?.invalidate()
-        self.isWhite = false
-      } else {
-        self.isWhite = true
-        self.isArmed = false
-      }
-    }
-  }
-  
-  var isWhite = false {
-    didSet {
-      self.label.textColor = self.isWhite ? Constants.whiteColor : Constants.redColor
-    }
-  }
-  
+  var isWhite = true
   var armedTimer: NSTimer?
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -63,8 +34,38 @@ class LoopRecordView: ControlLabelView, LoopRecordDelegate {
     self.label.text = self.loopText
   }
   
-  func toggleArmed() {
+  func toggleRed() {
     self.isWhite = !self.isWhite
+    self.label.textColor = self.isWhite ? Constants.whiteColor : Constants.redColor
   }
   
+  func didChangeIsArmed(isArmed: Bool) {
+    self.setArmed(isArmed)
+  }
+  
+  func didChangeIsLoopRecording(isLoopRecording: Bool) {
+    if isLoopRecording {
+      self.armedTimer?.invalidate()
+      self.label.textColor = Constants.redColor
+      self.isWhite = false
+    } else {
+      self.label.textColor = Constants.whiteColor
+      self.isWhite = true
+      self.setArmed(false)
+    }
+  }
+  
+  func setArmed(armed: Bool) {
+    if armed {
+      self.label.textColor = Constants.redColor
+      self.isWhite = false
+      let interval = 0.35
+      self.armedTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(LoopRecordView.toggleRed), userInfo: nil, repeats: true)
+      self.armedTimer?.tolerance = interval * 0.10
+    } else {
+      self.armedTimer?.invalidate()
+      self.label.textColor = Constants.whiteColor
+      self.isWhite = true
+    }
+  }
 }

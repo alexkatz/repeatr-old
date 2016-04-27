@@ -35,47 +35,9 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     }
   }
   
-  private lazy var plotImageView: UIImageView = { [unowned self] in
-    let plotImageView = UIImageView()
-    plotImageView.alpha = 0
-    self.insertSubview(plotImageView, atIndex: 0)
-    return plotImageView
-    }()
-  
-  private lazy var meterView: UIView = { [unowned self] in
-    let meterView = UIView()
-    meterView.backgroundColor = self.meterColor
-    meterView.translatesAutoresizingMaskIntoConstraints = false
-    self.addSubview(meterView)
-    
-    let horizontalConstraint = meterView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor)
-    let verticalConstraint = meterView.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor)
-    let widthConstraint = meterView.widthAnchor.constraintEqualToAnchor(self.widthAnchor)
-    var heightConstraint = meterView.heightAnchor.constraintEqualToAnchor(nil, constant: 0)
-    NSLayoutConstraint.activateConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
-    
-    self.meterHeightConstraint = heightConstraint
-    
-    return meterView
-    }()
-  
-  private lazy var bookmarkBaseView: UIView = { [unowned self] in
-    let bookmarkBaseView = UIView()
-    bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
-    bookmarkBaseView.translatesAutoresizingMaskIntoConstraints = false
-    self.addSubview(bookmarkBaseView)
-    
-    let horizontal =  bookmarkBaseView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor)
-    let vertical = bookmarkBaseView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor)
-    let width = bookmarkBaseView.widthAnchor.constraintEqualToAnchor(self.widthAnchor)
-    let height = bookmarkBaseView.heightAnchor.constraintEqualToAnchor(nil, constant: CGFloat(Constants.recordButtonHeight) * 0.75)
-    
-    NSLayoutConstraint.activateConstraints([horizontal, vertical, width, height])
-    
-    return bookmarkBaseView
-    }()
-  
-  
+  private lazy var plotImageView: UIImageView = self.createPlotImageView()
+  private lazy var meterView: UIView = self.createMeterView()
+  private lazy var bookmarkBaseView: UIView = self.createBookmarkBaseView()
   private lazy var label: UILabel = LayoutHelper.createInfoLabel()
   
   private var trackService: TrackService
@@ -160,7 +122,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     super.init(frame: CGRect.zero)
     self.setup()
   }
-
+  
   required init?(coder aDecoder: NSCoder) {
     self.trackService = TrackService()
     super.init(coder: aDecoder)
@@ -209,8 +171,13 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       }
     }
     
+    NSNotificationCenter.defaultCenter().postNotification(NSNotification(
+      name: Constants.notificationTrackSelected,
+      object: self,
+      userInfo: [Constants.trackServiceUUIDKey: self.trackService.uuid]))
+    
     if let location = self.activeTouch?.locationInView(self) {
-      if self.bookmarkBaseView.frame.contains(location) && self.bookmarkBaseView.alpha == 1 {
+      if self.bookmarkBaseView.frame.contains(location) && !self.bookmarkBaseView.hidden {
         self.bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
           self.uncommittedBookmarkView = bookmarkView
@@ -279,7 +246,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   }
   
   // MARK: Methods
-  
+
   func createBookmarkAtLocation(location: CGPoint) -> BookmarkView {
     let bookmarkView = BookmarkView(
       frame: CGRect(
@@ -439,6 +406,44 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     } else {
       done?(nil, nil)
     }
+  }
+  
+  private func createBookmarkBaseView() -> UIView {
+    let bookmarkBaseView = UIView()
+    bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
+    bookmarkBaseView.translatesAutoresizingMaskIntoConstraints = false
+    self.addSubview(bookmarkBaseView)
+    
+    bookmarkBaseView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
+    bookmarkBaseView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
+    bookmarkBaseView.widthAnchor.constraintEqualToAnchor(self.widthAnchor).active = true
+    bookmarkBaseView.heightAnchor.constraintEqualToAnchor(self.heightAnchor, multiplier: 0.20).active = true
+    
+    return bookmarkBaseView
+  }
+  
+  private func createPlotImageView() -> UIImageView {
+    let plotImageView = UIImageView()
+    plotImageView.alpha = 0
+    self.insertSubview(plotImageView, atIndex: 0)
+    return plotImageView
+  }
+  
+  private func createMeterView() -> UIView {
+    let meterView = UIView()
+    meterView.backgroundColor = self.meterColor
+    meterView.translatesAutoresizingMaskIntoConstraints = false
+    self.addSubview(meterView)
+    
+    meterView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
+    meterView.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
+    meterView.widthAnchor.constraintEqualToAnchor(self.widthAnchor).active = true
+    let heightConstraint = meterView.heightAnchor.constraintEqualToAnchor(nil, constant: 0)
+    heightConstraint.active = true
+    
+    self.meterHeightConstraint = heightConstraint
+    
+    return meterView
   }
   
   private func decibel(amplitude: Float) -> Float {

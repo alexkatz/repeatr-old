@@ -12,11 +12,14 @@ class LoopPlaybackView: ControlLabelView, LoopPlaybackDelegate {
   
   private let playingText = "PLAYING"
   private let pausedText = "PAUSED"
+  
+  weak var visualDelegate: PlaybackVisualDelegate?
 
   var isPlayingLoop = false {
     didSet {
       self.label.text = self.isPlayingLoop ? self.playingText : self.pausedText
       self.label.textColor = self.isPlayingLoop ? Constants.greenColor : Constants.whiteColor
+      self.visualDelegate?.playbackView(self, isPlayingLoop: self.isPlayingLoop)
     }
   }
   

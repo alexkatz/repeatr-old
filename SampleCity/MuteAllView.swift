@@ -11,8 +11,8 @@ import UIKit
 class MuteAllView: ControlLabelView {
 
   private let loopService = LoopService.sharedInstance
-  private let muteAllText = "MUTE"
-  private let unmuteAllText = "UNMUTE"
+  private let muteAllText = "MUTE ALL"
+  private let unmuteAllText = "UNMUTE ALL"
   
   override func setup() {
     self.enabled = true

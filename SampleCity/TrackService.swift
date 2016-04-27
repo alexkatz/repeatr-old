@@ -26,14 +26,18 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   
   var isArmedForLoopRecord = false {
     didSet {
-      self.loopRecordDelegate?.isArmed = self.isArmedForLoopRecord
+      if self.isArmedForLoopRecord != oldValue {
+        self.loopRecordDelegate?.didChangeIsArmed(self.isArmedForLoopRecord)
+      }
     }
   }
   
   var isLoopRecording = false {
     didSet {
-      self.loopRecordDelegate?.isLoopRecording = self.isLoopRecording
-      self.trackAccessDelegate?.enabled = !self.isLoopRecording
+      if self.isLoopRecording != oldValue {
+        self.loopRecordDelegate?.didChangeIsLoopRecording(self.isLoopRecording)
+        self.trackAccessDelegate?.enabled = !self.isLoopRecording
+      }
     }
   }
   

@@ -18,8 +18,6 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
   private var backgroundView = UIView()
   private var panGestureRecognizer: UIPanGestureRecognizer!
   
-  private var horizontalMode = false
-  
   var fillColor: UIColor? {
     didSet {
       if let fillColor = self.fillColor {
@@ -47,14 +45,11 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
     }
   }
   
-  override init(frame: CGRect) {
-    self.horizontalMode = true
-    super.init(frame: frame)
-  }
-  
-  required init?(coder aDecoder: NSCoder) {
-    self.horizontalMode = true
-    super.init(coder: aDecoder)
+  var centerLabelText: String? {
+    didSet {
+      self.label.text = self.centerLabelText
+      self.label.hidden = self.centerLabelText == nil
+    }
   }
   
   override func layoutSubviews() {
@@ -64,7 +59,12 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
   }
   
   override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-    return true
+    if let pan = gestureRecognizer as? UIPanGestureRecognizer {
+      let velocity = pan.velocityInView(self)
+      return abs(velocity.x) > abs(velocity.y)
+    }
+    
+    return false
   }
   
   override func willMoveToWindow(newWindow: UIWindow?) {
@@ -80,8 +80,7 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
   
   func handlePan(recognizer: UIPanGestureRecognizer) {
     let velocityInView = recognizer.velocityInView(self)
-    let velocity = (self.horizontalMode ? velocityInView.x : -velocityInView.y)
-    self.volumeLevel += Float(velocity * 0.0001)
+    self.volumeLevel += Float(velocityInView.x * 0.0001)
     self.delegate?.volumeLevel = self.volumeLevel
   }
   
@@ -100,23 +99,16 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
     self.filledView.backgroundColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimmerAlpha)
     self.filledView.translatesAutoresizingMaskIntoConstraints = false
     self.addSubview(self.filledView)
-
-    if self.horizontalMode {
-      self.filledView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
-      self.filledView.leftAnchor.constraintEqualToAnchor(self.leftAnchor).active = true
-      self.filledView.topAnchor.constraintEqualToAnchor(self.topAnchor).active = true
-      self.WidthConstraint = self.filledView.widthAnchor.constraintEqualToAnchor(nil)
-    } else {
-      self.filledView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
-      self.filledView.leftAnchor.constraintEqualToAnchor(self.leftAnchor).active = true
-      self.filledView.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
-      self.heightConstraint = self.filledView.heightAnchor.constraintEqualToAnchor(nil)
-    }
+    
+    self.filledView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
+    self.filledView.leftAnchor.constraintEqualToAnchor(self.leftAnchor).active = true
+    self.filledView.heightAnchor.constraintEqualToAnchor(nil, constant: 2).active = true
+    self.WidthConstraint = self.filledView.widthAnchor.constraintEqualToAnchor(nil)
     
     self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(VolumeControlView.handlePan(_:)))
     self.panGestureRecognizer.delegate = self
     
-    self.label.text = "VOLUME"
+    self.label.text = "TRACK VOLUME"
   }
   
 }

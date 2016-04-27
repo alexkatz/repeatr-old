@@ -47,7 +47,7 @@ class BookmarkView: UIView {
     
     let horizontal = self.cursorView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor)
     let vertical = self.cursorView.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor)
-    let width = self.cursorView.widthAnchor.constraintEqualToAnchor(nil, constant: 5)
+    let width = self.cursorView.widthAnchor.constraintEqualToAnchor(nil, constant: 2)
     let height = self.cursorView.heightAnchor.constraintEqualToAnchor(self.heightAnchor)
     
     NSLayoutConstraint.activateConstraints([horizontal, vertical, width, height])
