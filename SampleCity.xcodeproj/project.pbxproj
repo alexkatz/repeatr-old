@@ -14,6 +14,8 @@
 		3B1DE03C1CB42D2100682689 /* Disablable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE03B1CB42D2100682689 /* Disablable.swift */; };
 		3B297B501CCBE49700C93E2E /* MuteAllView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B297B4F1CCBE49700C93E2E /* MuteAllView.swift */; };
 		3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */; };
+		3B3331861CD2B601009CB79E /* RemoveTrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3331851CD2B601009CB79E /* RemoveTrackView.swift */; };
+		3B3331881CD3A4D1009CB79E /* WaveformGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3331871CD3A4D1009CB79E /* WaveformGestureRecognizer.swift */; };
 		3B49100F1CB2035E00465504 /* TrackCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B49100E1CB2035E00465504 /* TrackCollectionViewCell.swift */; };
 		3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */; };
 		3B6A8E231CB54210007B9030 /* LoopService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A8E221CB54210007B9030 /* LoopService.swift */; };
@@ -50,6 +52,8 @@
 		3B1DE03B1CB42D2100682689 /* Disablable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Disablable.swift; sourceTree = "<group>"; };
 		3B297B4F1CCBE49700C93E2E /* MuteAllView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MuteAllView.swift; sourceTree = "<group>"; };
 		3B2F91F81CAAD300003B54FE /* LoopRecordDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordDelegate.swift; sourceTree = "<group>"; };
+		3B3331851CD2B601009CB79E /* RemoveTrackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveTrackView.swift; sourceTree = "<group>"; };
+		3B3331871CD3A4D1009CB79E /* WaveformGestureRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaveformGestureRecognizer.swift; sourceTree = "<group>"; };
 		3B49100E1CB2035E00465504 /* TrackCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackCollectionViewCell.swift; sourceTree = "<group>"; };
 		3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordView.swift; sourceTree = "<group>"; };
 		3B6A8E221CB54210007B9030 /* LoopService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopService.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 				3B1DE0341CB2911900682689 /* WaveformCollectionViewLayout.swift */,
 				3B6A8E261CB76545007B9030 /* LayoutHelper.swift */,
 				3BE35EF21CCD95DF00AC825C /* TracksCollectionViewLayout.swift */,
+				3B3331871CD3A4D1009CB79E /* WaveformGestureRecognizer.swift */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -200,6 +205,7 @@
 				3B7F73B01CC131BD0094244D /* VolumeControlView.swift */,
 				3B297B4F1CCBE49700C93E2E /* MuteAllView.swift */,
 				3B0D3DBA1CCE62AB00EF8D0C /* CreateTrackView.swift */,
+				3B3331851CD2B601009CB79E /* RemoveTrackView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -298,7 +304,9 @@
 				3B6A8E231CB54210007B9030 /* LoopService.swift in Sources */,
 				3B98F69A1CA0474B000DB79E /* Constants.swift in Sources */,
 				3B1DE0381CB3126500682689 /* LoopPoint.swift in Sources */,
+				3B3331861CD2B601009CB79E /* RemoveTrackView.swift in Sources */,
 				3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */,
+				3B3331881CD3A4D1009CB79E /* WaveformGestureRecognizer.swift in Sources */,
 				3B297B501CCBE49700C93E2E /* MuteAllView.swift in Sources */,
 				3B1DE03C1CB42D2100682689 /* Disablable.swift in Sources */,
 				3B7B62161CB4316600C4833F /* ControlLabelView.swift in Sources */,

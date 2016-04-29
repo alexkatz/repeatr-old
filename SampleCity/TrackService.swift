@@ -28,6 +28,9 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
     didSet {
       if self.isArmedForLoopRecord != oldValue {
         self.loopRecordDelegate?.didChangeIsArmed(self.isArmedForLoopRecord)
+        if self.isArmedForLoopRecord {
+          NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: Constants.notificationLoopRecordArmed, object: self))
+        }
       }
     }
   }

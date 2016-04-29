@@ -10,9 +10,7 @@ import UIKit
 import AVFoundation
 
 class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
-  
-  private let bookmarkRemovalThresholdTime: UInt64 = 3500000
-  
+
   private var totalSamples = 0
   private var asset: AVURLAsset?
   private var assetTrack: AVAssetTrack?
@@ -20,21 +18,13 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   private var meterHeightConstraint: NSLayoutConstraint?
   private var bookmarkViews = [BookmarkView]()
   private var activeTouch: UITouch?
-  private var uncommittedBookmarkTime: UInt64?
   private var isPlacingBookmark = false
   private var didInitialize = false
   private var hasAudio = false
   private var currentBounds: CGRect!
+  private var uncommittedBookmarkDelta: CGFloat = 0
   
-  private var uncommittedBookmarkView: BookmarkView? {
-    didSet {
-      if self.uncommittedBookmarkView != nil && oldValue == nil {
-        self.uncommittedBookmarkTime = mach_absolute_time()
-      } else if self.uncommittedBookmarkView == nil {
-        self.isPlacingBookmark = false
-      }
-    }
-  }
+  private var uncommittedBookmarkView: BookmarkView?
   
   private lazy var plotImageView: UIImageView = self.createPlotImageView()
   private lazy var meterView: UIView = self.createMeterView()
@@ -61,14 +51,14 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
           self.plotImageView.alpha = 1
           self.bookmarkBaseView.alpha = 1
         }
-        
+
       } else {
         self.clear()
         self.enabled = false
       }
     }
   }
-  
+
   var currentTime: NSTimeInterval? {
     didSet {
       if let currentTime = self.currentTime {
@@ -89,7 +79,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         self.meterView.alpha = 1
         let noiseFloor = 0 - self.trackService.noiseFloor
         let heightPercent = CGFloat((noiseFloor - abs(dbLevel)) / noiseFloor)
-        self.meterHeightConstraint?.constant = heightPercent > 0 ? (self.bounds.height / 2) * heightPercent : 0
+        self.meterHeightConstraint?.constant = heightPercent > 0 ? self.bounds.height * heightPercent : 0
       } else {
         self.meterView.alpha = 0
       }
@@ -113,6 +103,11 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
   var enabled = true {
     didSet {
       self.userInteractionEnabled = self.enabled
+    }
+  }
+  
+  var dimmed = false {
+    didSet {
       self.alpha = self.enabled ? 1 : 0.5
       self.bookmarkBaseView.alpha = self.enabled && self.audioURL != nil ? 1 : 0
     }
@@ -158,7 +153,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     }
     
     for bookmarkView in self.bookmarkViews {
-      if let percentX = bookmarkView.percentX where bookmarkView.bounds.height != self.bounds.height {
+      if let percentX = bookmarkView.percentX {
         bookmarkView.frame = CGRect(
           x: (self.bounds.width * percentX) - (Constants.bookmarkViewWidth / 2),
           y: 0,
@@ -168,7 +163,17 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     }
   }
   
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func willMoveToSuperview(newSuperview: UIView?) {
+    if newSuperview != nil {
+      self.addGestureRecognizer(WaveformGestureRecognizer(waveformView: self))
+    } else {
+      self.gestureRecognizers?.removeAll()
+    }
+  }
+  
+  // MARK: Methods
+
+  func touchesBegan(touches: Set<UITouch>) {
     if touches.count == 1 {
       self.activeTouch = touches.first
     } else {
@@ -207,7 +212,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     }
   }
   
-  override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  func touchesMoved(touches: Set<UITouch>) {
     if touches.filter({ $0 == self.activeTouch }).count == 0 {
       return
     }
@@ -215,12 +220,15 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     if let uncommittedBookmarkView = self.uncommittedBookmarkView {
       if let location = touches.first?.locationInView(self), previousLocation = touches.first?.previousLocationInView(self) {
         let deltaX = location.x - previousLocation.x
+        
+        self.uncommittedBookmarkDelta += abs(location.x - previousLocation.x)
+        
         uncommittedBookmarkView.center = CGPoint(x: uncommittedBookmarkView.center.x + deltaX, y: uncommittedBookmarkView.center.y)
       }
     }
   }
   
-  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  func touchesEnded(touches: Set<UITouch>) {
     if self.activeTouch != nil && touches.contains(self.activeTouch!) {
       if !self.trackService.isPlayingLoop {
         self.trackService.stopAudio()
@@ -228,8 +236,8 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       
       self.activeTouch = nil
       
-      if let uncommittedBookmarkView = self.uncommittedBookmarkView, uncommittedBookmarkTime = self.uncommittedBookmarkTime {
-        if mach_absolute_time() - uncommittedBookmarkTime < self.bookmarkRemovalThresholdTime && !self.isPlacingBookmark {
+      if let uncommittedBookmarkView = self.uncommittedBookmarkView {
+        if !self.isPlacingBookmark && self.uncommittedBookmarkDelta < 1 {
           uncommittedBookmarkView.userInteractionEnabled = false
           UIView.animateWithDuration(Constants.defaultAnimationDuration, delay: 0, options: [.BeginFromCurrentState], animations: {
             uncommittedBookmarkView.alpha = 0
@@ -247,12 +255,12 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         }
         
         self.uncommittedBookmarkView = nil
+        self.isPlacingBookmark = false
+        self.uncommittedBookmarkDelta = 0
       }
     }
   }
   
-  // MARK: Methods
-
   func createBookmarkAtLocation(location: CGPoint) -> BookmarkView {
     let bookmarkView = BookmarkView(
       frame: CGRect(
@@ -299,7 +307,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     self.addSubview(self.cursor!)
     self.enabled = self.audioURL != nil
     
-    let introText = "HOLD RECORD BELOW TO RECORD SOME AUDIO, YOU PUNK."
+    let introText = "Select me and hold RECORD below to record some audio"
     let range = (introText as NSString).rangeOfString(" RECORD ")
     let attributedString = NSMutableAttributedString(string: introText)
     attributedString.addAttributes([NSForegroundColorAttributeName: Constants.redColor], range: range)

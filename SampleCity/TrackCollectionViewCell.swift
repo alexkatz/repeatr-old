@@ -14,6 +14,7 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
   private lazy var volumeControlView: VolumeControlView = self.createVolumeControlView()
   private lazy var trackControlsView: UIView = self.createTrackControlsView()
   private lazy var playbackView: LoopPlaybackView = self.createPlaybackView()
+  private lazy var removeTrackView: RemoveTrackView = self.createRemoveTrackView()
   
   private var bottomSelectedBorder: UIView!
   private var topSelectedBorder: UIView!
@@ -21,36 +22,40 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
   var track: Track? {
     didSet {
       oldValue?.waveformView.removeFromSuperview()
-      self.trackControlsView.alpha = (self.active || self.track?.waveformView.audioURL == nil) ? 0 : 1
+      self.trackControlsView.alpha = (!self.editing || self.track?.waveformView.audioURL == nil) ? 0 : 1
       if let track = self.track {
         self.addWaveformView(track.waveformView)
         self.bringSubviewToFront(self.volumeControlView)
         
         self.volumeControlView.delegate = track
         self.volumeControlView.volumeLevel = track.volumeLevel
+        self.playbackView.trackService = track.trackService
+        self.removeTrackView.trackService = track.trackService
       }
     }
   }
   
-  var active = false {
+  var editing = false {
     didSet {
       if let track = self.track {
         self.volumeControlView.volumeLevel = track.volumeLevel
         
-        if !self.active {
+        if self.editing {
           self.playbackView.trackService = track.trackService
+          self.removeTrackView.trackService = track.trackService
           track.trackService.loopPlaybackDelegate = self.playbackView
           self.bringSubviewToFront(self.trackControlsView)
         }
       }
-      self.track?.waveformView.enabled = self.active
-      self.trackControlsView.alpha = (self.active || self.track?.waveformView.audioURL == nil) ? 0 : 1
+      self.track?.waveformView.enabled = !self.editing
+      self.trackControlsView.alpha = (self.editing || self.track?.waveformView.audioURL == nil) ? 1 : 0
     }
   }
   
   var enabled = true {
     didSet {
       self.track?.waveformView.enabled = self.enabled
+      self.track?.waveformView.dimmed = !self.enabled
     }
   }
   
@@ -106,6 +111,20 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
     playbackView.visualDelegate = self
     
     return playbackView
+  }
+  
+  private func createRemoveTrackView() -> RemoveTrackView {
+    let removeTrackView = RemoveTrackView()
+    removeTrackView.translatesAutoresizingMaskIntoConstraints = false
+    self.trackControlsView.addSubview(removeTrackView)
+    
+    removeTrackView.heightAnchor.constraintEqualToAnchor(nil, constant: CGFloat(Constants.recordButtonHeight)).active = true
+    removeTrackView.widthAnchor.constraintEqualToAnchor(self.trackControlsView.widthAnchor, multiplier: 0.25).active = true
+    removeTrackView.leadingAnchor.constraintEqualToAnchor(self.playbackView.trailingAnchor).active = true
+    removeTrackView.bottomAnchor.constraintEqualToAnchor(self.trackControlsView.bottomAnchor).active = true
+    removeTrackView.trackService = self.track?.trackService
+    
+    return removeTrackView
   }
   
   private func createVolumeControlView() -> VolumeControlView {

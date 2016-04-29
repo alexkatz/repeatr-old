@@ -30,5 +30,7 @@ class Constants {
   static let font = UIFont.systemFontOfSize(15.0, weight: UIFontWeightUltraLight)
   
   static let notificationTrackSelected = "notificationTrackSelected"
+  static let notificationLoopRecordArmed = "notificationLoopArmed"
+  static let notificationDestroyTrack = "notificationDestroyTrack"
   static let trackServiceUUIDKey = "trackServiceUUIDKey"
 }

@@ -9,6 +9,6 @@
 import Foundation
 
 protocol TrackSelectorDelegate: class {
-  var isSelectingTrack: Bool { get }
-  func setTrackSelectionEnabled(enabled: Bool, animated: Bool)
+  var editingTracks: Bool { get }
+  func setTrackEditModeEnabled(enabled: Bool, animated: Bool)
 }

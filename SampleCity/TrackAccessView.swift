@@ -19,7 +19,7 @@ class TrackAccessView: ControlLabelView {
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
     if let delegate = self.delegate {
-      self.delegate?.setTrackSelectionEnabled(!delegate.isSelectingTrack, animated: true)
+      self.delegate?.setTrackEditModeEnabled(delegate.editingTracks, animated: true)
     }
   }
   

@@ -23,7 +23,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   @IBOutlet weak var trackAccessView: TrackAccessView!
   @IBOutlet weak var muteAllView: MuteAllView!
   
-  var isSelectingTrack = false
+  var editingTracks = false
   
   // MARK: Overrides
   
@@ -39,14 +39,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
       print("Error starting audio session")
     }
     
-    self.tracks.append(Track())
-    
     self.trackAccessView.delegate = self
     
     self.collectionView.registerClass(TrackCollectionViewCell.self, forCellWithReuseIdentifier: String(TrackCollectionViewCell))
     self.collectionView.delegate = self
     self.collectionView.dataSource = self
-    self.collectionView.scrollEnabled = false
+    
     
     self.loopRecordView.parent = self
   }
@@ -75,6 +73,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.onTrackSelected(_:)), name: Constants.notificationTrackSelected, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.onLoopRecordArmed(_:)), name: Constants.notificationLoopRecordArmed, object: nil)
+    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeViewController.onDestroyTrack(_:)), name: Constants.notificationDestroyTrack, object: nil)
   }
   
   override func viewDidDisappear(animated: Bool) {
@@ -88,22 +88,25 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   
   // MARK: Methods
   
-  func setTrackSelectionEnabled(enabled: Bool, animated: Bool = true) {
-    self.isSelectingTrack = enabled
-    self.collectionView.scrollEnabled = self.isSelectingTrack
+  func setTrackEditModeEnabled(enabled: Bool, animated: Bool = true) {
+    if self.tracks.count == 0 {
+      return
+    }
     
-    let deactivateViews = {
+    self.editingTracks = enabled
+    
+    let setCellsEditing = {
       for cell in self.visibleCells() {
-        cell.active = !self.isSelectingTrack
+        cell.editing = enabled
       }
     }
     
     if animated {
       UIView.animateWithDuration(Constants.defaultAnimationDuration, delay: 0, options: [.AllowUserInteraction, .BeginFromCurrentState], animations: {
-        deactivateViews()
+        setCellsEditing()
         }, completion: nil)
     } else {
-      deactivateViews()
+      setCellsEditing()
     }
   }
   
@@ -112,15 +115,36 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     self.collectionView.performBatchUpdates({
       self.tracks.insert(newTrack, atIndex: 0)
       self.collectionView.insertItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-      }, completion: nil)
+      }, completion: { finished in
+        if finished {
+          for cell in self.visibleCells() {
+            if cell.track == self.tracks.first {
+              self.selectCell(cell)
+              break
+            }
+          }
+        }
+    })
+  }
+  
+  func onDestroyTrack(notification: NSNotification) {
+    if let selectedTrackServiceUUID = notification.userInfo?[Constants.trackServiceUUIDKey] as? String {
+      for cell in self.visibleCells() {
+        if cell.track?.trackService.uuid == selectedTrackServiceUUID, let indexPath = self.collectionView.indexPathForCell(cell) {
+          self.collectionView.performBatchUpdates({
+            if let track = cell.track, trackIndex = self.tracks.indexOf(track) {
+              self.collectionView.deleteItemsAtIndexPaths([indexPath])
+              self.tracks.removeAtIndex(trackIndex)
+            }
+            }, completion: nil)
+          break
+        }
+      }
+    }
   }
   
   func onTrackSelected(notification: NSNotification) {
     if let selectedUUID = notification.userInfo?[Constants.trackServiceUUIDKey] as? String {
-      
-      //if a track is currently armed for loop recording,
-      
-      
       for cell in self.visibleCells() {
         if cell.track?.trackService.uuid == selectedUUID {
           if !cell.selectedForLoopRecord {
@@ -136,6 +160,20 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
   }
   
+  func onLoopRecordArmed(notification: NSNotification) {
+    for cell in self.visibleCells() {
+      if let track = cell.track where track.trackService.isArmedForLoopRecord {
+        cell.enabled = true
+      } else {
+        cell.enabled = false
+      }
+    }
+  }
+  
+  func onFinishedLoopRecording(notification: NSNotification) {
+    
+  }
+  
   private func visibleCells() -> [TrackCollectionViewCell] {
     return self.collectionView.visibleCells().map({ cell in cell as! TrackCollectionViewCell })
   }
@@ -146,20 +184,26 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   }
   
   private func selectCell(cell: TrackCollectionViewCell) {
-    cell.track?.trackService.recordDelegate = self.recordView
-    cell.track?.trackService.loopRecordDelegate = self.loopRecordView
-    cell.track?.trackService.trackAccessDelegate = self.trackAccessView
-    self.recordView.trackService = cell.track?.trackService
-    self.loopRecordView.trackService = cell.track?.trackService
-    
-    cell.selectedForLoopRecord = true
-    self.selectedTrack = cell.track
-    
-    for visibleCell in self.visibleCells() {
-      visibleCell.selectedForLoopRecord = visibleCell == cell
+    if self.selectedTrack != cell.track {
+      cell.track?.trackService.recordDelegate = self.recordView
+      cell.track?.trackService.loopRecordDelegate = self.loopRecordView
+      cell.track?.trackService.trackAccessDelegate = self.trackAccessView
+      self.recordView.trackService = cell.track?.trackService
+      self.loopRecordView.trackService = cell.track?.trackService
+      
+      cell.selectedForLoopRecord = true
+      self.selectedTrack = cell.track
+      
+      for visibleCell in self.visibleCells() {
+        visibleCell.selectedForLoopRecord = visibleCell == cell
+        visibleCell.enabled = true
+        visibleCell.track?.trackService.isArmedForLoopRecord = false
+        self.loopRecordView.setArmed(false)
+      }
     }
   }
   
+  // TODO: new track thing that subtly appears when you pull down on collectionview
   private func createNewTrackView() -> UIView {
     let view = UIView()
     
@@ -175,7 +219,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(TrackCollectionViewCell), forIndexPath: indexPath) as! TrackCollectionViewCell
     cell.track = self.tracks[indexPath.item]
-    cell.active = !self.isSelectingTrack
     
     cell.selectedForLoopRecord = cell.track == self.selectedTrack
     
@@ -190,18 +233,16 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   // MARK: UICollectionViewDelegate
   
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-    self.isSelectingTrack = false
-    self.recordView.enabled = !self.isSelectingTrack
-    self.loopRecordView.enabled = !self.isSelectingTrack
+    self.recordView.enabled = true
+    self.loopRecordView.enabled = true
     
     if let cell = collectionView.cellForItemAtIndexPath(indexPath) as? TrackCollectionViewCell {
       self.selectCell(cell)
-      self.setTrackSelectionEnabled(false, animated: true)
     }
   }
   
   func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if scrollView.contentOffset.y < -100 {
+    if scrollView.contentOffset.y < -50 {
       self.createTrack()
     }
   }

@@ -47,6 +47,7 @@ class TracksCollectionViewLayout: UICollectionViewLayout {
   
   override func prepareLayout() {
     if let cellCount = self.collectionView?.numberOfItemsInSection(0) {
+      self.layoutAttributes.removeAll()
       for i in 0..<cellCount {
         let indexPath = NSIndexPath(forItem: i, inSection: 0)
         let layoutAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
