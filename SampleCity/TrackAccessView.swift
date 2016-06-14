@@ -14,13 +14,11 @@ class TrackAccessView: ControlLabelView {
   
   override func setup() {
     self.enabled = true
-    self.label.text = "TRACKS"
+    self.label.text = "MIX"
   }
   
   override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if let delegate = self.delegate {
-      self.delegate?.setTrackEditModeEnabled(delegate.editingTracks, animated: true)
-    }
+    self.delegate?.toggleTrackEditMode()
   }
   
 }

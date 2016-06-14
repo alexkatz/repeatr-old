@@ -48,7 +48,8 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
         }
       }
       self.track?.waveformView.enabled = !self.editing
-      self.trackControlsView.alpha = (self.editing || self.track?.waveformView.audioURL == nil) ? 1 : 0
+      self.track?.waveformView.dimmed = self.editing
+      self.trackControlsView.alpha = self.editing ? 1 : 0
     }
   }
   

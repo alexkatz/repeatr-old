@@ -62,12 +62,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     coordinator.animateAlongsideTransition({ context in
       self.setCollectionViewLayoutWithSize(newCollectionViewSize)
-      
-      }, completion: { finished in
-        //        if let cell = self.collectionView.visibleCells().first as? TrackCollectionViewCell, indexPath = self.collectionView.indexPathForCell(cell) {
-        //          self.updateCell(cell, atIndexPath: indexPath)
-        //        }
-    })
+      }, completion: nil)
   }
   
   override func viewWillAppear(animated: Bool) {
@@ -88,27 +83,17 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   
   // MARK: Methods
   
-  func setTrackEditModeEnabled(enabled: Bool, animated: Bool = true) {
-    if self.tracks.count == 0 {
-      return
-    }
-    
-    self.editingTracks = enabled
-    
-    let setCellsEditing = {
-      for cell in self.visibleCells() {
-        cell.editing = enabled
-      }
-    }
-    
-    if animated {
+  func toggleTrackEditMode() {
+    if self.tracks.count > 0 {
+      self.editingTracks = !self.editingTracks
       UIView.animateWithDuration(Constants.defaultAnimationDuration, delay: 0, options: [.AllowUserInteraction, .BeginFromCurrentState], animations: {
-        setCellsEditing()
+        for cell in self.visibleCells() {
+          cell.editing = self.editingTracks
+        }
         }, completion: nil)
-    } else {
-      setCellsEditing()
     }
   }
+  
   
   func createTrack() {
     let newTrack = Track()
@@ -119,7 +104,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         if finished {
           for cell in self.visibleCells() {
             if cell.track == self.tracks.first {
-              self.selectCell(cell)
+              UIView.animateWithDuration(0.35, delay: 0, options: [.AllowUserInteraction, .BeginFromCurrentState], animations: {
+                self.selectCell(cell)
+                }, completion: nil)
               break
             }
           }
@@ -197,9 +184,11 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
       for visibleCell in self.visibleCells() {
         visibleCell.selectedForLoopRecord = visibleCell == cell
         visibleCell.enabled = true
+        visibleCell.editing = false
         visibleCell.track?.trackService.isArmedForLoopRecord = false
         self.loopRecordView.setArmed(false)
       }
+      self.editingTracks = false
     }
   }
   

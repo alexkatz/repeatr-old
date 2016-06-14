@@ -188,7 +188,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
       userInfo: [Constants.trackServiceUUIDKey: self.trackService.uuid]))
     
     if let location = self.activeTouch?.locationInView(self) {
-      if self.bookmarkBaseView.frame.contains(location) && !self.bookmarkBaseView.hidden {
+      if self.bookmarkBaseView.frame.contains(location) && self.audioURL != nil {
         self.bookmarkBaseView.backgroundColor = self.bookmarkBaseColor
         if let bookmarkView = self.bookmarkViews.filter({ $0.frame.contains(location) }).first {
           self.uncommittedBookmarkView = bookmarkView
@@ -307,7 +307,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     self.addSubview(self.cursor!)
     self.enabled = self.audioURL != nil
     
-    let introText = "Select me and hold RECORD below to record some audio"
+    let introText = "HOLD RECORD BELOW TO RECORD SOME AUDIO. OR WHATEVER. I DON'T EVEN CARE SO WHATEVER. "
     let range = (introText as NSString).rangeOfString(" RECORD ")
     let attributedString = NSMutableAttributedString(string: introText)
     attributedString.addAttributes([NSForegroundColorAttributeName: Constants.redColor], range: range)
