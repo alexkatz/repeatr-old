@@ -45,6 +45,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     self.collectionView.delegate = self
     self.collectionView.dataSource = self
     
+    
     self.loopRecordView.parent = self
   }
   
@@ -119,9 +120,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         if cell.track?.trackService.uuid == selectedTrackServiceUUID, let indexPath = self.collectionView.indexPathForCell(cell) {
           self.collectionView.performBatchUpdates({
             if let track = cell.track, trackIndex = self.tracks.indexOf(track) {
-              if track.trackService.isPlayingLoop {
-                track.trackService.removeFromLoopPlayback()
-              }
               self.collectionView.deleteItemsAtIndexPaths([indexPath])
               self.tracks.removeAtIndex(trackIndex)
             }
