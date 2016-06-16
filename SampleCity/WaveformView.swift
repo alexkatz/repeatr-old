@@ -2,9 +2,11 @@
 //  WaveformView.swift
 //  SampleCity
 //
-//  Created by Alexander Katz on 3/20/16.
+//  Created by Alexander Katz on 3/20/16
 //  Copyright © 2016 Alexander Katz. All rights reserved.
 //
+// NOTE: waveform drawing influenced by: https://github.com/fulldecent/FDWaveformView
+// 
 
 import UIKit
 import AVFoundation

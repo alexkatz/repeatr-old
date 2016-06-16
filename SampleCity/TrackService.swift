@@ -134,6 +134,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
       self.trackAccessDelegate?.enabled = false
       if self.meterTimer == nil {
         self.meterTimer = NSTimer.scheduledTimerWithTimeInterval(0.001, target: self, selector: #selector(TrackService.updateMeters), userInfo: nil, repeats: true)
+        NSRunLoop.mainRunLoop().addTimer(self.meterTimer!, forMode: NSRunLoopCommonModes)
       }
       self.loopPlaybackDelegate?.loopExists = false
     }
@@ -244,6 +245,7 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
       let interval = 0.001
       self.cursorTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target: self, selector: #selector(TrackService.updateCurrentTime), userInfo: nil, repeats: true)
       self.cursorTimer?.tolerance = interval * 0.10
+      NSRunLoop.mainRunLoop().addTimer(self.cursorTimer!, forMode: NSRunLoopCommonModes)
     }
   }
   

@@ -35,8 +35,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
       try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, withOptions: AVAudioSessionCategoryOptions.DefaultToSpeaker)
       try audioSession.setPreferredIOBufferDuration(0.001)
       try AVAudioSession.sharedInstance().setActive(true)
-    } catch {
-      print("Error starting audio session")
+    } catch let error as NSError {
+      print("Error starting audio session: \(error.description)")
     }
     
     self.trackAccessView.delegate = self
@@ -120,6 +120,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         if cell.track?.trackService.uuid == selectedTrackServiceUUID, let indexPath = self.collectionView.indexPathForCell(cell) {
           self.collectionView.performBatchUpdates({
             if let track = cell.track, trackIndex = self.tracks.indexOf(track) {
+              if track.trackService.isPlayingLoop {
+                track.trackService.removeFromLoopPlayback()
+              }
               self.collectionView.deleteItemsAtIndexPaths([indexPath])
               self.tracks.removeAtIndex(trackIndex)
             }
