@@ -309,7 +309,7 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
     self.addSubview(self.cursor!)
     self.enabled = self.audioURL != nil
     
-    let introText = "HOLD RECORD BELOW TO RECORD SOME AUDIO. OR WHATEVER. I DON'T EVEN CARE SO WHATEVER. "
+    let introText = "HOLD RECORD BELOW TO RECORD SOME AUDIO!"
     let range = (introText as NSString).rangeOfString(" RECORD ")
     let attributedString = NSMutableAttributedString(string: introText)
     attributedString.addAttributes([NSForegroundColorAttributeName: Constants.redColor], range: range)
@@ -416,8 +416,8 @@ class WaveformView: UIView, PlaybackDelegate, MeterDelegate {
         if reader.status == .Completed {
           done?(fullAudioData, sampleMax)
         }
-      } catch {
-        print("There was a problem downsampling the asset: \(error)")
+      } catch let error as NSError {
+        print("There was a problem downsampling the asset: \(error.localizedDescription)")
       }
     } else {
       done?(nil, nil)

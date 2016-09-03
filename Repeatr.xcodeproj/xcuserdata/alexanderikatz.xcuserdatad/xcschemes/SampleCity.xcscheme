@@ -17,7 +17,7 @@
                BlueprintIdentifier = "3BE5DDAA1C9E314C00574670"
                BuildableName = "SampleCity.app"
                BlueprintName = "SampleCity"
-               ReferencedContainer = "container:SampleCity.xcodeproj">
+               ReferencedContainer = "container:Repeatr.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
             BlueprintIdentifier = "3BE5DDAA1C9E314C00574670"
             BuildableName = "SampleCity.app"
             BlueprintName = "SampleCity"
-            ReferencedContainer = "container:SampleCity.xcodeproj">
+            ReferencedContainer = "container:Repeatr.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,7 +58,7 @@
             BlueprintIdentifier = "3BE5DDAA1C9E314C00574670"
             BuildableName = "SampleCity.app"
             BlueprintName = "SampleCity"
-            ReferencedContainer = "container:SampleCity.xcodeproj">
+            ReferencedContainer = "container:Repeatr.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,7 +77,7 @@
             BlueprintIdentifier = "3BE5DDAA1C9E314C00574670"
             BuildableName = "SampleCity.app"
             BlueprintName = "SampleCity"
-            ReferencedContainer = "container:SampleCity.xcodeproj">
+            ReferencedContainer = "container:Repeatr.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

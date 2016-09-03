@@ -36,7 +36,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
       try audioSession.setPreferredIOBufferDuration(0.001)
       try AVAudioSession.sharedInstance().setActive(true)
     } catch let error as NSError {
-      print("Error starting audio session: \(error.description)")
+      print("Error starting audio session: \(error.localizedDescription)")
     }
     
     self.trackAccessView.delegate = self
@@ -212,12 +212,13 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(String(TrackCollectionViewCell), forIndexPath: indexPath) as! TrackCollectionViewCell
     cell.track = self.tracks[indexPath.item]
     
-    cell.selectedForLoopRecord = cell.track == self.selectedTrack
-    
     if !self.didInitialize && self.tracks.count == 1 {
       self.selectCell(cell)
       self.didInitialize = true
     }
+    
+    cell.selectedForLoopRecord = cell.track == self.selectedTrack
+    cell.editing = self.tracks[indexPath.item].waveformView.dimmed
     
     return cell
   }

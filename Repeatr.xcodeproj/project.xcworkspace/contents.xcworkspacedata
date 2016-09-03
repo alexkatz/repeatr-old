@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:SampleCity.xcodeproj">
+      location = "self:/Users/alexanderikatz/Developer/SampleCity/Repeatr.xcodeproj">
    </FileRef>
 </Workspace>
