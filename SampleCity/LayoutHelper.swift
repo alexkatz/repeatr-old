@@ -10,12 +10,12 @@ import UIKit
 
 class LayoutHelper {
   
-  class func addInfoLabel(label: UILabel, toView view: UIView) {
+  class func addInfoLabel(_ label: UILabel, toView view: UIView) {
     view.addSubview(label)
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-    label.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
-    label.widthAnchor.constraintLessThanOrEqualToAnchor(view.widthAnchor, constant: -32).active = true
+    label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    label.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -32).isActive = true
     label.layer.shouldRasterize = true
   }
   
@@ -23,7 +23,7 @@ class LayoutHelper {
     let label = UILabel()
     label.textColor = Constants.whiteColor
     label.font = Constants.font
-    label.textAlignment = .Center
+    label.textAlignment = .center
     label.numberOfLines = 2
     return label
   }

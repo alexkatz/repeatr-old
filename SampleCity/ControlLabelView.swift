@@ -16,7 +16,7 @@ class ControlLabelView: UIView, Disablable {
   var enabled = false {
     didSet {
       self.alpha = self.enabled ? 1 : Constants.dimAlpha
-      self.userInteractionEnabled = self.enabled
+      self.isUserInteractionEnabled = self.enabled
     }
   }
   
@@ -24,11 +24,11 @@ class ControlLabelView: UIView, Disablable {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = Constants.font
-    label.textColor = UIColor.whiteColor()
-    label.textAlignment = .Center
+    label.textColor = UIColor.white
+    label.textAlignment = .center
     self.addSubview(label)
-    label.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor).active = true
-    label.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor).active = true
+    label.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+    label.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
     return label
     }()
   

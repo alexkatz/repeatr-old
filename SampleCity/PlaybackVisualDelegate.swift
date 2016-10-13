@@ -9,5 +9,5 @@
 import Foundation
 
 protocol PlaybackVisualDelegate: class {
-  func playbackView(playbackView: LoopPlaybackView, isPlayingLoop: Bool)
+  func playbackView(_ playbackView: LoopPlaybackView, isPlayingLoop: Bool)
 }

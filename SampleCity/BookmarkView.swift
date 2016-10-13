@@ -12,7 +12,7 @@ class BookmarkView: UIView {
   
   var cursorView: UIView!
   var percentX: CGFloat?
-  var color = UIColor.whiteColor() {
+  var color = UIColor.white {
     didSet {
       self.cursorView.backgroundColor = self.color
     }
@@ -39,17 +39,17 @@ class BookmarkView: UIView {
     self.addCursorView()
   }
   
-  private func addCursorView() {
+  fileprivate func addCursorView() {
     self.cursorView = UIView()
     self.cursorView.translatesAutoresizingMaskIntoConstraints = false
     self.cursorView.backgroundColor = self.color
     self.addSubview(self.cursorView)
     
-    let horizontal = self.cursorView.centerXAnchor.constraintEqualToAnchor(self.centerXAnchor)
-    let vertical = self.cursorView.centerYAnchor.constraintEqualToAnchor(self.centerYAnchor)
-    let width = self.cursorView.widthAnchor.constraintEqualToAnchor(nil, constant: 2)
-    let height = self.cursorView.heightAnchor.constraintEqualToAnchor(self.heightAnchor)
+    let horizontal = self.cursorView.centerXAnchor.constraint(equalTo: self.centerXAnchor)
+    let vertical = self.cursorView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+    let width = self.cursorView.widthAnchor.constraint(equalToConstant: 2)
+    let height = self.cursorView.heightAnchor.constraint(equalTo: self.heightAnchor)
     
-    NSLayoutConstraint.activateConstraints([horizontal, vertical, width, height])
+    NSLayoutConstraint.activate([horizontal, vertical, width, height])
   }
 }

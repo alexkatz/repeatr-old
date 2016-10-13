@@ -10,10 +10,10 @@ import UIKit
 
 class LoopPlaybackView: ControlLabelView, LoopPlaybackDelegate {
   
-  private let playingText = "PLAYING"
-  private let pausedText = "PAUSED"
+  fileprivate let playingText = "PLAYING"
+  fileprivate let pausedText = "PAUSED"
   
-  private var touch: UITouch?
+  fileprivate var touch: UITouch?
   
   weak var visualDelegate: PlaybackVisualDelegate?
   
@@ -34,12 +34,12 @@ class LoopPlaybackView: ControlLabelView, LoopPlaybackDelegate {
     }
   }
   
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.touch = touches.first
   }
   
-  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-    if self.touch == touches.first, let touch = self.touch where self.bounds.contains(touch.locationInView(self)) {
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    if self.touch == touches.first, let touch = self.touch , self.bounds.contains(touch.location(in: self)) {
       if self.trackService != nil && self.trackService!.isPlayingLoop {
         self.trackService?.removeFromLoopPlayback()
       } else {

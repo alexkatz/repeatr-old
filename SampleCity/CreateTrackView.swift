@@ -17,7 +17,7 @@ class CreateTrackView: ControlLabelView {
     self.label.text = "CREATE\nTRACK"
   }
   
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.parent?.createTrack()
   }
   

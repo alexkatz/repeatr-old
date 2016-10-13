@@ -11,7 +11,7 @@ import UIKit
 
 class TracksCollectionViewLayout: UICollectionViewLayout {
   
-  private let cellBottomBorder = CGFloat(2)
+  fileprivate let cellBottomBorder = CGFloat(2)
   
   var layoutAttributes = [UICollectionViewLayoutAttributes]()
   var bounds: CGSize!
@@ -21,22 +21,22 @@ class TracksCollectionViewLayout: UICollectionViewLayout {
     self.bounds = bounds
   }
   
-  override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+  override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
     return self.layoutAttributes.filter { layoutAttributes in
-      CGRectIntersectsRect(rect, layoutAttributes.frame)
+      rect.intersects(layoutAttributes.frame)
     }
   }
   
-  override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+  override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
     let layoutAttributes = self.layoutAttributes.filter({ layoutAttributes in
-      layoutAttributes.indexPath.item == indexPath.item
+      (layoutAttributes.indexPath as NSIndexPath).item == (indexPath as NSIndexPath).item
     }).first
     
     return layoutAttributes
   }
   
-  override func collectionViewContentSize() -> CGSize {
-    if let cellCount = self.collectionView?.numberOfItemsInSection(0) {
+  override var collectionViewContentSize : CGSize {
+    if let cellCount = self.collectionView?.numberOfItems(inSection: 0) {
       let width = self.bounds.width
       let height = (CGFloat(cellCount) * Constants.cellHeight) + (CGFloat(cellCount) * self.cellBottomBorder)
       return CGSize(width: width, height: height)
@@ -45,12 +45,12 @@ class TracksCollectionViewLayout: UICollectionViewLayout {
     return CGSize.zero
   }
   
-  override func prepareLayout() {
-    if let cellCount = self.collectionView?.numberOfItemsInSection(0) {
+  override func prepare() {
+    if let cellCount = self.collectionView?.numberOfItems(inSection: 0) {
       self.layoutAttributes.removeAll()
       for i in 0..<cellCount {
-        let indexPath = NSIndexPath(forItem: i, inSection: 0)
-        let layoutAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+        let indexPath = IndexPath(item: i, section: 0)
+        let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
         
         let cellSize = CGSize(width: self.bounds.width, height: Constants.cellHeight)
         let x = CGFloat(0)

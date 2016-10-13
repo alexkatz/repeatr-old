@@ -9,6 +9,6 @@
 import Foundation
 
 protocol LoopRecordDelegate: class, Disablable {
-  func didChangeIsLoopRecording(isLoopRecording: Bool)
-  func didChangeIsArmed(isArmed: Bool)
+  func didChangeIsLoopRecording(_ isLoopRecording: Bool)
+  func didChangeIsArmed(_ isArmed: Bool)
 }

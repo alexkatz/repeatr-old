@@ -16,11 +16,11 @@ class RecordView: ControlLabelView, RecordDelegate {
     }
   }
 
-  override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.trackService?.recordAudio()
   }
   
-  override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.trackService?.stopAudio()
   }
   

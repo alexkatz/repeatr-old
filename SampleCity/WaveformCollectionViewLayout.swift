@@ -19,22 +19,22 @@ class WaveformCollectionViewLayout: UICollectionViewLayout {
     self.bounds = bounds
   }
   
-  override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+  override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
     return self.layoutAttributes.filter { layoutAttributes in
-      CGRectIntersectsRect(rect, layoutAttributes.frame)
+      rect.intersects(layoutAttributes.frame)
     }
   }
   
-  override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+  override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
     let layoutAttributes = self.layoutAttributes.filter({ layoutAttributes in
-      layoutAttributes.indexPath.item == indexPath.item
+      (layoutAttributes.indexPath as NSIndexPath).item == (indexPath as NSIndexPath).item
     }).first
     
     return layoutAttributes
   }
   
-  override func collectionViewContentSize() -> CGSize {
-    if let cellCount = self.collectionView?.numberOfItemsInSection(0) {
+  override var collectionViewContentSize : CGSize {
+    if let cellCount = self.collectionView?.numberOfItems(inSection: 0) {
       let height = self.bounds.height
       let width = self.bounds.width * CGFloat(cellCount)
       return CGSize(width: width, height: height)
@@ -43,20 +43,20 @@ class WaveformCollectionViewLayout: UICollectionViewLayout {
     return CGSize.zero
   }
   
-  override func prepareLayout() {
-    if let cellCount = self.collectionView?.numberOfItemsInSection(0) {
+  override func prepare() {
+    if let cellCount = self.collectionView?.numberOfItems(inSection: 0) {
       for i in 0..<cellCount {
-        let indexPath = NSIndexPath(forItem: i, inSection: 0)
-        let layoutAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+        let indexPath = IndexPath(item: i, section: 0)
+        let layoutAttributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
         let cellSize = self.bounds
-        let x = cellSize.width * CGFloat(i)
+        let x = (cellSize?.width)! * CGFloat(i)
         let y = CGFloat(0)
         
         layoutAttributes.frame = CGRect(
           origin: CGPoint(
             x: x,
             y: y),
-          size: cellSize)
+          size: cellSize!)
         
         self.layoutAttributes.append(layoutAttributes)
       }

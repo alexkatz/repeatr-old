@@ -9,15 +9,17 @@
 import UIKit
 
 class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
+
+  static let identifier = "TrackCollectionViewCell"
   
-  private lazy var label: UILabel = LayoutHelper.createInfoLabel()
-  private lazy var volumeControlView: VolumeControlView = self.createVolumeControlView()
-  private lazy var trackControlsView: UIView = self.createTrackControlsView()
-  private lazy var playbackView: LoopPlaybackView = self.createPlaybackView()
-  private lazy var removeTrackView: RemoveTrackView = self.createRemoveTrackView()
+  fileprivate lazy var label: UILabel = LayoutHelper.createInfoLabel()
+  fileprivate lazy var volumeControlView: VolumeControlView = self.createVolumeControlView()
+  fileprivate lazy var trackControlsView: UIView = self.createTrackControlsView()
+  fileprivate lazy var playbackView: LoopPlaybackView = self.createPlaybackView()
+  fileprivate lazy var removeTrackView: RemoveTrackView = self.createRemoveTrackView()
   
-  private var bottomSelectedBorder: UIView!
-  private var topSelectedBorder: UIView!
+  fileprivate var bottomSelectedBorder: UIView!
+  fileprivate var topSelectedBorder: UIView!
   
   var track: Track? {
     didSet {
@@ -25,7 +27,7 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
       self.trackControlsView.alpha = (!self.editing || self.track?.waveformView.audioURL == nil) ? 0 : 1
       if let track = self.track {
         self.addWaveformView(track.waveformView)
-        self.bringSubviewToFront(self.volumeControlView)
+        self.bringSubview(toFront: self.volumeControlView)
         
         self.volumeControlView.delegate = track
         self.volumeControlView.volumeLevel = track.volumeLevel
@@ -44,7 +46,7 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
           self.playbackView.trackService = track.trackService
           self.removeTrackView.trackService = track.trackService
           track.trackService.loopPlaybackDelegate = self.playbackView
-          self.bringSubviewToFront(self.trackControlsView)
+          self.bringSubview(toFront: self.trackControlsView)
         }
       }
       self.track?.waveformView.enabled = !self.editing
@@ -66,86 +68,86 @@ class TrackCollectionViewCell: UICollectionViewCell, PlaybackVisualDelegate {
     }
   }
   
-  private func setSelectedBordersVisible(visible: Bool) {
+  fileprivate func setSelectedBordersVisible(_ visible: Bool) {
     if self.bottomSelectedBorder == nil {
       
     }
   }
 
-  private func addWaveformView(waveformView: WaveformView) {
-    waveformView.backgroundColor = UIColor.blackColor()
+  fileprivate func addWaveformView(_ waveformView: WaveformView) {
+    waveformView.backgroundColor = UIColor.black
     waveformView.translatesAutoresizingMaskIntoConstraints = false
     
     self.addSubview(waveformView)
     
-    waveformView.leadingAnchor.constraintEqualToAnchor(self.leadingAnchor).active = true
-    waveformView.trailingAnchor.constraintEqualToAnchor(self.trailingAnchor).active = true
-    waveformView.topAnchor.constraintEqualToAnchor(self.topAnchor).active = true
-    waveformView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
+    waveformView.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+    waveformView.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+    waveformView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+    waveformView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
   }
   
-  private func createTrackControlsView() -> UIView {
+  fileprivate func createTrackControlsView() -> UIView {
     let view = UIView()
     view.translatesAutoresizingMaskIntoConstraints = false
     self.addSubview(view)
     
-    view.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
-    view.leftAnchor.constraintEqualToAnchor(self.leftAnchor).active = true
-    view.topAnchor.constraintEqualToAnchor(self.topAnchor).active = true
-    view.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
+    view.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+    view.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+    view.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+    view.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
     
     view.alpha = 0
     
     return view
   }
   
-  private func createPlaybackView() -> LoopPlaybackView {
+  fileprivate func createPlaybackView() -> LoopPlaybackView {
     let playbackView = LoopPlaybackView()
     playbackView.translatesAutoresizingMaskIntoConstraints = false
     self.trackControlsView.addSubview(playbackView)
     
-    playbackView.heightAnchor.constraintEqualToAnchor(nil, constant: CGFloat(Constants.recordButtonHeight)).active = true
-    playbackView.widthAnchor.constraintEqualToAnchor(self.trackControlsView.widthAnchor, multiplier: 0.25).active = true
-    playbackView.leadingAnchor.constraintEqualToAnchor(self.trackControlsView.leadingAnchor).active = true
-    playbackView.bottomAnchor.constraintEqualToAnchor(self.trackControlsView.bottomAnchor).active = true
+    playbackView.heightAnchor.constraint(equalToConstant: CGFloat(Constants.recordButtonHeight)).isActive = true
+    playbackView.widthAnchor.constraint(equalTo: self.trackControlsView.widthAnchor, multiplier: 0.25).isActive = true
+    playbackView.leadingAnchor.constraint(equalTo: self.trackControlsView.leadingAnchor).isActive = true
+    playbackView.bottomAnchor.constraint(equalTo: self.trackControlsView.bottomAnchor).isActive = true
     playbackView.enabled = true
     playbackView.visualDelegate = self
     
     return playbackView
   }
   
-  private func createRemoveTrackView() -> RemoveTrackView {
+  fileprivate func createRemoveTrackView() -> RemoveTrackView {
     let removeTrackView = RemoveTrackView()
     removeTrackView.translatesAutoresizingMaskIntoConstraints = false
     self.trackControlsView.addSubview(removeTrackView)
     
-    removeTrackView.heightAnchor.constraintEqualToAnchor(nil, constant: CGFloat(Constants.recordButtonHeight)).active = true
-    removeTrackView.widthAnchor.constraintEqualToAnchor(self.trackControlsView.widthAnchor, multiplier: 0.25).active = true
-    removeTrackView.leadingAnchor.constraintEqualToAnchor(self.playbackView.trailingAnchor).active = true
-    removeTrackView.bottomAnchor.constraintEqualToAnchor(self.trackControlsView.bottomAnchor).active = true
+    removeTrackView.heightAnchor.constraint(equalToConstant: CGFloat(Constants.recordButtonHeight)).isActive = true
+    removeTrackView.widthAnchor.constraint(equalTo: self.trackControlsView.widthAnchor, multiplier: 0.25).isActive = true
+    removeTrackView.leadingAnchor.constraint(equalTo: self.playbackView.trailingAnchor).isActive = true
+    removeTrackView.bottomAnchor.constraint(equalTo: self.trackControlsView.bottomAnchor).isActive = true
     removeTrackView.trackService = self.track?.trackService
     
     return removeTrackView
   }
   
-  private func createVolumeControlView() -> VolumeControlView {
+  fileprivate func createVolumeControlView() -> VolumeControlView {
     let volumeView = VolumeControlView()
     volumeView.translatesAutoresizingMaskIntoConstraints = false
     self.trackControlsView.addSubview(volumeView)
     
-    volumeView.rightAnchor.constraintEqualToAnchor(self.trackControlsView.rightAnchor).active = true
-    volumeView.heightAnchor.constraintEqualToAnchor(self.trackControlsView.heightAnchor).active = true
-    volumeView.bottomAnchor.constraintEqualToAnchor(self.trackControlsView.bottomAnchor).active = true
-    volumeView.leftAnchor.constraintEqualToAnchor(self.trackControlsView.leftAnchor).active = true
-    volumeView.backgroundColor = Constants.whiteColor.colorWithAlphaComponent(0)
-    volumeView.fillColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
+    volumeView.rightAnchor.constraint(equalTo: self.trackControlsView.rightAnchor).isActive = true
+    volumeView.heightAnchor.constraint(equalTo: self.trackControlsView.heightAnchor).isActive = true
+    volumeView.bottomAnchor.constraint(equalTo: self.trackControlsView.bottomAnchor).isActive = true
+    volumeView.leftAnchor.constraint(equalTo: self.trackControlsView.leftAnchor).isActive = true
+    volumeView.backgroundColor = Constants.whiteColor.withAlphaComponent(0)
+    volumeView.fillColor = Constants.whiteColor.withAlphaComponent(Constants.dimAlpha)
     volumeView.centerLabelText = nil
     return volumeView
   }
   
   // PlaybackVisualDelegate
   
-  func playbackView(playbackView: LoopPlaybackView, isPlayingLoop: Bool) {
-    self.volumeControlView.fillColor = isPlayingLoop ? Constants.greenColor.colorWithAlphaComponent(Constants.dimAlpha) : Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
+  func playbackView(_ playbackView: LoopPlaybackView, isPlayingLoop: Bool) {
+    self.volumeControlView.fillColor = isPlayingLoop ? Constants.greenColor.withAlphaComponent(Constants.dimAlpha) : Constants.whiteColor.withAlphaComponent(Constants.dimAlpha)
   }
 }

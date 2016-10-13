@@ -10,13 +10,13 @@ import UIKit
 
 class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
   
-  private var activeTouch: UITouch?
-  private var heightConstraint: NSLayoutConstraint?
-  private var WidthConstraint: NSLayoutConstraint?
+  fileprivate var activeTouch: UITouch?
+  fileprivate var heightConstraint: NSLayoutConstraint?
+  fileprivate var WidthConstraint: NSLayoutConstraint?
   
-  private var filledView = UIView()
-  private var backgroundView = UIView()
-  private var panGestureRecognizer: UIPanGestureRecognizer!
+  fileprivate var filledView = UIView()
+  fileprivate var backgroundView = UIView()
+  fileprivate var panGestureRecognizer: UIPanGestureRecognizer!
   
   var fillColor: UIColor? {
     didSet {
@@ -48,7 +48,7 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
   var centerLabelText: String? {
     didSet {
       self.label.text = self.centerLabelText
-      self.label.hidden = self.centerLabelText == nil
+      self.label.isHidden = self.centerLabelText == nil
     }
   }
   
@@ -58,28 +58,28 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
     self.WidthConstraint?.constant = self.bounds.width * CGFloat(self.volumeLevel)
   }
   
-  override func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+  override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
     if let pan = gestureRecognizer as? UIPanGestureRecognizer {
-      let velocity = pan.velocityInView(self)
+      let velocity = pan.velocity(in: self)
       return abs(velocity.x) > abs(velocity.y)
     }
     
     return false
   }
   
-  override func willMoveToWindow(newWindow: UIWindow?) {
-    super.willMoveToWindow(newWindow)
+  override func willMove(toWindow newWindow: UIWindow?) {
+    super.willMove(toWindow: newWindow)
     if newWindow == nil {
       self.removeGestureRecognizer(self.panGestureRecognizer)
     } else {
-      self.heightConstraint?.active = true
-      self.WidthConstraint?.active = true
+      self.heightConstraint?.isActive = true
+      self.WidthConstraint?.isActive = true
       self.addGestureRecognizer(self.panGestureRecognizer)
     }
   }
   
-  func handlePan(recognizer: UIPanGestureRecognizer) {
-    let velocityInView = recognizer.velocityInView(self)
+  func handlePan(_ recognizer: UIPanGestureRecognizer) {
+    let velocityInView = recognizer.velocity(in: self)
     self.volumeLevel += Float(velocityInView.x * 0.0001)
     self.delegate?.volumeLevel = self.volumeLevel
   }
@@ -91,19 +91,19 @@ class VolumeControlView: ControlLabelView, UIGestureRecognizerDelegate {
     self.backgroundView.translatesAutoresizingMaskIntoConstraints  = false
     self.addSubview(self.backgroundView)
     
-    self.backgroundView.topAnchor.constraintEqualToAnchor(self.topAnchor).active = true
-    self.backgroundView.leftAnchor.constraintEqualToAnchor(self.leftAnchor).active = true
-    self.backgroundView.rightAnchor.constraintEqualToAnchor(self.rightAnchor).active = true
-    self.backgroundView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
+    self.backgroundView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+    self.backgroundView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+    self.backgroundView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+    self.backgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
     
-    self.filledView.backgroundColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimmerAlpha)
+    self.filledView.backgroundColor = Constants.whiteColor.withAlphaComponent(Constants.dimmerAlpha)
     self.filledView.translatesAutoresizingMaskIntoConstraints = false
     self.addSubview(self.filledView)
     
-    self.filledView.bottomAnchor.constraintEqualToAnchor(self.bottomAnchor).active = true
-    self.filledView.leftAnchor.constraintEqualToAnchor(self.leftAnchor).active = true
-    self.filledView.heightAnchor.constraintEqualToAnchor(nil, constant: 2).active = true
-    self.WidthConstraint = self.filledView.widthAnchor.constraintEqualToAnchor(nil)
+    self.filledView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+    self.filledView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
+    self.filledView.heightAnchor.constraint(equalToConstant: 2).isActive = true
+    self.WidthConstraint = self.filledView.widthAnchor.constraint(equalToConstant: 0)
     
     self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(VolumeControlView.handlePan(_:)))
     self.panGestureRecognizer.delegate = self

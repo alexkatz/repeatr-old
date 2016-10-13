@@ -35,6 +35,8 @@
 		3BA564D51CCFF0640019DBCB /* PlaybackVisualDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA564D41CCFF0640019DBCB /* PlaybackVisualDelegate.swift */; };
 		3BAF48101CADAE71009ADA6E /* LoopPlaybackDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAF480F1CADAE71009ADA6E /* LoopPlaybackDelegate.swift */; };
 		3BAF48121CADB62E009ADA6E /* LoopPlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAF48111CADB62E009ADA6E /* LoopPlaybackView.swift */; };
+		3BB8C5A31DAD62BD00427528 /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8C5A21DAD62BD00427528 /* UIViewExtensions.swift */; };
+		3BB8C5A51DAD883500427528 /* LoopRecordCancelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB8C5A41DAD883500427528 /* LoopRecordCancelView.swift */; };
 		3BE35EF31CCD95DF00AC825C /* TracksCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE35EF21CCD95DF00AC825C /* TracksCollectionViewLayout.swift */; };
 		3BE5DDAF1C9E314C00574670 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */; };
 		3BE5DDB11C9E314C00574670 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE5DDB01C9E314C00574670 /* HomeViewController.swift */; };
@@ -73,6 +75,8 @@
 		3BA564D41CCFF0640019DBCB /* PlaybackVisualDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaybackVisualDelegate.swift; sourceTree = "<group>"; };
 		3BAF480F1CADAE71009ADA6E /* LoopPlaybackDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPlaybackDelegate.swift; sourceTree = "<group>"; };
 		3BAF48111CADB62E009ADA6E /* LoopPlaybackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPlaybackView.swift; sourceTree = "<group>"; };
+		3BB8C5A21DAD62BD00427528 /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
+		3BB8C5A41DAD883500427528 /* LoopRecordCancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordCancelView.swift; sourceTree = "<group>"; };
 		3BE35EF21CCD95DF00AC825C /* TracksCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksCollectionViewLayout.swift; sourceTree = "<group>"; };
 		3BE5DDAB1C9E314C00574670 /* Repeatr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Repeatr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -149,6 +153,14 @@
 			name = Misc;
 			sourceTree = "<group>";
 		};
+		3BB8C5A11DAD62AF00427528 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3BB8C5A21DAD62BD00427528 /* UIViewExtensions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		3BE5DDA21C9E314C00574670 = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +180,7 @@
 		3BE5DDAD1C9E314C00574670 /* Repeatr */ = {
 			isa = PBXGroup;
 			children = (
+				3BB8C5A11DAD62AF00427528 /* Extensions */,
 				3B1DE0361CB3125700682689 /* Models */,
 				3B98F6981CA04732000DB79E /* Misc */,
 				3B98F68E1CA03E40000DB79E /* Delegates */,
@@ -207,6 +220,7 @@
 				3B297B4F1CCBE49700C93E2E /* MuteAllView.swift */,
 				3B0D3DBA1CCE62AB00EF8D0C /* CreateTrackView.swift */,
 				3B3331851CD2B601009CB79E /* RemoveTrackView.swift */,
+				3BB8C5A41DAD883500427528 /* LoopRecordCancelView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -238,12 +252,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Alexander Katz";
 				TargetAttributes = {
 					3BE5DDAA1C9E314C00574670 = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = UX2RCP32D2;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -298,6 +313,7 @@
 				3B8148921CA32B2100E5D91D /* BookmarkView.swift in Sources */,
 				3BE35EF31CCD95DF00AC825C /* TracksCollectionViewLayout.swift in Sources */,
 				3B7F73B11CC131BD0094244D /* VolumeControlView.swift in Sources */,
+				3BB8C5A51DAD883500427528 /* LoopRecordCancelView.swift in Sources */,
 				3BA564D51CCFF0640019DBCB /* PlaybackVisualDelegate.swift in Sources */,
 				3BE5DDC31C9F575E00574670 /* WaveformView.swift in Sources */,
 				3B7B62181CB43E7400C4833F /* TrackAccessView.swift in Sources */,
@@ -305,6 +321,7 @@
 				3B6A8E231CB54210007B9030 /* LoopService.swift in Sources */,
 				3B98F69A1CA0474B000DB79E /* Constants.swift in Sources */,
 				3B1DE0381CB3126500682689 /* LoopPoint.swift in Sources */,
+				3BB8C5A31DAD62BD00427528 /* UIViewExtensions.swift in Sources */,
 				3B3331861CD2B601009CB79E /* RemoveTrackView.swift in Sources */,
 				3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */,
 				3B3331881CD3A4D1009CB79E /* WaveformGestureRecognizer.swift in Sources */,
@@ -353,8 +370,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -397,8 +416,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -417,6 +438,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -433,6 +455,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.alexkatz.repeatr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -448,6 +471,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.alexkatz.repeatr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

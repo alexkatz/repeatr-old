@@ -13,7 +13,7 @@ class Track: AudioVolumeDelegate, Equatable {
   var trackService: TrackService
   var waveformView: WaveformView
   
-  let uuid = NSUUID().UUIDString
+  let uuid = UUID().uuidString
   
   var volumeLevel: Float {
     get {
@@ -32,10 +32,10 @@ class Track: AudioVolumeDelegate, Equatable {
     self.trackService = trackService
     self.waveformView = WaveformView(trackService: trackService)
     
-    self.waveformView.waveColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
+    self.waveformView.waveColor = Constants.whiteColor.withAlphaComponent(Constants.dimAlpha)
     self.waveformView.cursorColor = Constants.greenColor
-    self.waveformView.bookmarkColor = Constants.whiteColor.colorWithAlphaComponent(Constants.dimAlpha)
-    self.waveformView.bookmarkBaseColor = Constants.whiteColor.colorWithAlphaComponent(0.0)
+    self.waveformView.bookmarkColor = Constants.whiteColor.withAlphaComponent(Constants.dimAlpha)
+    self.waveformView.bookmarkBaseColor = Constants.whiteColor.withAlphaComponent(0.0)
     
     self.trackService.playbackDelegate = self.waveformView
     self.trackService.meterDelegate = self.waveformView
