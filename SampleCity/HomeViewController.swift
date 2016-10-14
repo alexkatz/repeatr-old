@@ -11,11 +11,12 @@ import AVFoundation
 
 class HomeViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, TrackSelectorDelegate {
   
-  private var tracks = [Track]()
-  private var loopRecordViewActiveConstraints = [NSLayoutConstraint]()
+  private var tracks: [Track] = []
+  private var loopRecordViewActiveConstraints: [NSLayoutConstraint] = []
   private var collectionViewOffset: CGPoint?
   private var selectedTrack: Track?
-  private var didInitialize = false
+  private var didInitialize: Bool = false
+  private var armedCellY: CGFloat?
   
   private lazy var newTrackView: UIView = self.createNewTrackView()
   
@@ -25,6 +26,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   @IBOutlet weak var trackAccessView: TrackAccessView!
   @IBOutlet weak var muteAllView: MuteAllView!
   @IBOutlet weak var loopRecordCancelView: LoopRecordCancelView!
+  @IBOutlet weak var collectionViewBottomConstraint: NSLayoutConstraint!
   
   @IBOutlet var loopRecordViewPassiveConstraints: [NSLayoutConstraint]!
   
@@ -39,7 +41,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
       let audioSession = AVAudioSession.sharedInstance()
       try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
       try audioSession.setPreferredIOBufferDuration(0.001)
-      try AVAudioSession.sharedInstance().setActive(true)
+      try audioSession.setActive(true)
     } catch let error as NSError {
       print("Error starting audio session: \(error.localizedDescription)")
     }
@@ -160,10 +162,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   func onLoopRecordArmed(_ notification: Notification) {
     DispatchQueue.main.async {
       for cell in self.visibleCells() {
-        if let track = cell.track , track.trackService.isArmedForLoopRecord {
+        if let track = cell.track, track.trackService.isArmedForLoopRecord {
           track.trackService.removeFromLoopPlayback()
           cell.enabled = true
           self.collectionView.isScrollEnabled = false
+          self.armedCellY = cell.frame.origin.y
+          self.collectionViewBottomConstraint.constant += self.armedCellY!
           UIView.animate(
             withDuration: 0.5,
             delay: 0,
@@ -180,7 +184,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
             completion: { finished in
               
           })
-          self.collectionView.setContentOffset(CGPoint(x: 0, y: cell.frame.origin.y), animated: false)
         } else {
           cell.enabled = false
         }
@@ -190,10 +193,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   
   func dismissActiveLoopRecord() {
     DispatchQueue.main.async {
-      for cell in self.visibleCells() {
-        cell.track?.trackService.isArmedForLoopRecord = false
-      }
       self.collectionView.isScrollEnabled = true
+      self.collectionViewBottomConstraint.constant -= self.armedCellY ?? 0
+      self.armedCellY = nil
       UIView.animate(
         withDuration: 0.5,
         delay: 0,
@@ -210,7 +212,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
           }
         },
         completion: { finished in
-          
+          if finished {
+            for cell in self.visibleCells() {
+              cell.track?.trackService.isArmedForLoopRecord = false
+              cell.enabled = true
+            }
+          }
       })
     }
   }

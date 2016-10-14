@@ -61,7 +61,7 @@ class LoopRecordView: ControlLabelView, LoopRecordDelegate {
   func setArmed(_ armed: Bool) {
     if armed {
       self.label.textColor = Constants.blackColor
-      self.backgroundColor = Constants.redColor.withAlphaComponent(0.7)
+      self.backgroundColor = Constants.redColor
       self.isWhite = false
       let interval = 0.35
       self.armedTimer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(LoopRecordView.toggleRed), userInfo: nil, repeats: true)
