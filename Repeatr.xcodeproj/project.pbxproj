@@ -20,6 +20,7 @@
 		3B4C3B291CA728DD00B4684D /* LoopRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */; };
 		3B6A8E231CB54210007B9030 /* LoopService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A8E221CB54210007B9030 /* LoopService.swift */; };
 		3B6A8E271CB76545007B9030 /* LayoutHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A8E261CB76545007B9030 /* LayoutHelper.swift */; };
+		3B731CC61DBABD1400B0420B /* TracksLoopRecordCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B731CC51DBABD1400B0420B /* TracksLoopRecordCollectionViewLayout.swift */; };
 		3B7B62161CB4316600C4833F /* ControlLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7B62151CB4316600C4833F /* ControlLabelView.swift */; };
 		3B7B62181CB43E7400C4833F /* TrackAccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7B62171CB43E7400C4833F /* TrackAccessView.swift */; };
 		3B7B621A1CB4437300C4833F /* TrackSelectorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7B62191CB4437300C4833F /* TrackSelectorDelegate.swift */; };
@@ -60,6 +61,7 @@
 		3B4C3B281CA728DD00B4684D /* LoopRecordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordView.swift; sourceTree = "<group>"; };
 		3B6A8E221CB54210007B9030 /* LoopService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopService.swift; sourceTree = "<group>"; };
 		3B6A8E261CB76545007B9030 /* LayoutHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayoutHelper.swift; sourceTree = "<group>"; };
+		3B731CC51DBABD1400B0420B /* TracksLoopRecordCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksLoopRecordCollectionViewLayout.swift; sourceTree = "<group>"; };
 		3B7B62151CB4316600C4833F /* ControlLabelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlLabelView.swift; sourceTree = "<group>"; };
 		3B7B62171CB43E7400C4833F /* TrackAccessView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackAccessView.swift; sourceTree = "<group>"; };
 		3B7B62191CB4437300C4833F /* TrackSelectorDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackSelectorDelegate.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				3B6A8E261CB76545007B9030 /* LayoutHelper.swift */,
 				3BE35EF21CCD95DF00AC825C /* TracksCollectionViewLayout.swift */,
 				3B3331871CD3A4D1009CB79E /* WaveformGestureRecognizer.swift */,
+				3B731CC51DBABD1400B0420B /* TracksLoopRecordCollectionViewLayout.swift */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -329,6 +332,7 @@
 				3B1DE03C1CB42D2100682689 /* Disablable.swift in Sources */,
 				3B7B62161CB4316600C4833F /* ControlLabelView.swift in Sources */,
 				3B1DE0351CB2911900682689 /* WaveformCollectionViewLayout.swift in Sources */,
+				3B731CC61DBABD1400B0420B /* TracksLoopRecordCollectionViewLayout.swift in Sources */,
 				3B7B621A1CB4437300C4833F /* TrackSelectorDelegate.swift in Sources */,
 				3B2F91F91CAAD300003B54FE /* LoopRecordDelegate.swift in Sources */,
 				3BAF48121CADB62E009ADA6E /* LoopPlaybackView.swift in Sources */,

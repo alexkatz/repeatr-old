@@ -17,6 +17,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   private var selectedTrack: Track?
   private var didInitialize: Bool = false
   private var armedCellY: CGFloat?
+  private var currentCollectionViewOffset: CGPoint = CGPoint.zero
   
   private lazy var newTrackView: UIView = self.createNewTrackView()
   
@@ -165,9 +166,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
         if let track = cell.track, track.trackService.isArmedForLoopRecord {
           track.trackService.removeFromLoopPlayback()
           cell.enabled = true
-          self.collectionView.isScrollEnabled = false
-          self.armedCellY = cell.frame.origin.y
-          self.collectionViewBottomConstraint.constant += self.armedCellY!
+          self.currentCollectionViewOffset = self.collectionView.contentOffset
           UIView.animate(
             withDuration: 0.5,
             delay: 0,
@@ -180,9 +179,9 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
               }
               self.view.layoutIfNeeded()
               self.loopRecordCancelView.isHidden = false
+              self.collectionView.collectionViewLayout = TracksLoopRecordCollectionViewLayout(bounds: self.collectionView.bounds.size, armedCellIndexPath: self.collectionView.indexPath(for: cell))
             },
             completion: { finished in
-              
           })
         } else {
           cell.enabled = false
@@ -194,7 +193,6 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   func dismissActiveLoopRecord() {
     DispatchQueue.main.async {
       self.collectionView.isScrollEnabled = true
-      self.collectionViewBottomConstraint.constant -= self.armedCellY ?? 0
       self.armedCellY = nil
       UIView.animate(
         withDuration: 0.5,
@@ -209,6 +207,8 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
               constraint.isActive = true
             }
             self.view.layoutIfNeeded()
+            self.collectionView.collectionViewLayout = TracksCollectionViewLayout(bounds: self.collectionView.bounds.size)
+            self.collectionView.contentOffset = self.currentCollectionViewOffset
           }
         },
         completion: { finished in
@@ -303,7 +303,12 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   }
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    
+    for cell in self.visibleCells() {
+      if cell.selectedForLoopRecord {
+        print(self.collectionView.convert(cell.frame, to: self.view).origin.y)
+        break
+      }
+    }
   }
   
 }

@@ -11,14 +11,18 @@ import UIKit
 
 class TracksCollectionViewLayout: UICollectionViewLayout {
   
-  fileprivate let cellBottomBorder = CGFloat(2)
+  private let cellBottomBorder = CGFloat(2)
   
   var layoutAttributes = [UICollectionViewLayoutAttributes]()
   var bounds: CGSize!
   
-  required convenience init(bounds: CGSize) {
-    self.init()
+  required init(bounds: CGSize) {
+    super.init()
     self.bounds = bounds
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
   }
   
   override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
