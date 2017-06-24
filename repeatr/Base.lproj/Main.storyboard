@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController wantsFullScreenLayout="YES" id="BYZ-38-t0r" customClass="HomeViewController" customModule="Repeatr" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ccG-IV-MjF">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hTm-Wk-3bk">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wbk-pc-hIQ" userLabel="RecordView" customClass="RecordView" customModule="Repeatr" customModuleProvider="target">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Vhg-Ux-QRU"/>
+                                </constraints>
+                                <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fgQ-z9-we1" userLabel="MuteAllView" customClass="MuteAllView" customModule="Repeatr" customModuleProvider="target">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="CK9-xf-VgD"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2bZ-Jz-ynt" userLabel="TrackAccessView" customClass="TrackAccessView" customModule="Repeatr" customModuleProvider="target">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="ylL-Vo-abe"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OSO-1Z-YHT" userLabel="LoopRecordView" customClass="LoopRecordView" customModule="Repeatr" customModuleProvider="target">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="rvY-3n-7Jt"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ngs-09-ddq" userLabel="LoopRecordCancelView" customClass="LoopRecordCancelView" customModule="Repeatr" customModuleProvider="target">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="cYd-A9-pfu"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="fgQ-z9-we1" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="60A-Ms-Ase"/>
+                            <constraint firstItem="ccG-IV-MjF" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" constant="-44" id="GAM-E0-cfs"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="Lb9-qr-hGf"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" multiplier="1.75" id="Nmo-nN-LGb"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2bZ-Jz-ynt" secondAttribute="bottom" id="PH2-kj-2hF"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wbk-pc-hIQ" secondAttribute="bottom" id="UB1-j9-PKo"/>
+                            <constraint firstItem="fgQ-z9-we1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" multiplier="1.25" id="UuR-BB-xwm"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ccG-IV-MjF" secondAttribute="bottom" constant="44" id="WxC-2x-4rL"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="OSO-1Z-YHT" secondAttribute="bottom" id="amh-RW-yNN"/>
+                            <constraint firstItem="ccG-IV-MjF" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="c4M-SQ-7pp"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="fgQ-z9-we1" secondAttribute="bottom" id="g1q-XY-5Fb"/>
+                            <constraint firstItem="ccG-IV-MjF" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="ivG-iG-vey"/>
+                            <constraint firstItem="2bZ-Jz-ynt" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="jOx-xa-TEM"/>
+                            <constraint firstItem="Ngs-09-ddq" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="mUf-wf-Ukf"/>
+                            <constraint firstItem="OSO-1Z-YHT" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" multiplier="0.75" id="ozm-4w-9sU"/>
+                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.25" id="qn9-BK-mmD"/>
+                            <constraint firstItem="Ngs-09-ddq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" multiplier="0.75" id="s8c-YE-U8a"/>
+                            <constraint firstItem="wbk-pc-hIQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" multiplier="0.25" id="usz-cA-MOP"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Ngs-09-ddq" secondAttribute="bottom" id="x7f-ql-U4v"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <value key="contentSizeForViewInPopover" type="size" width="414" height="736"/>
+                    <connections>
+                        <outlet property="collectionView" destination="ccG-IV-MjF" id="bl4-vq-yBd"/>
+                        <outlet property="collectionViewBottomConstraint" destination="WxC-2x-4rL" id="bgu-B7-vqg"/>
+                        <outlet property="loopRecordCancelView" destination="Ngs-09-ddq" id="8HP-jH-wEK"/>
+                        <outlet property="loopRecordView" destination="OSO-1Z-YHT" id="3CE-Hh-R1P"/>
+                        <outlet property="muteAllView" destination="fgQ-z9-we1" id="q7o-E2-G1h"/>
+                        <outlet property="recordView" destination="wbk-pc-hIQ" id="pq4-e5-rbp"/>
+                        <outlet property="trackAccessView" destination="2bZ-Jz-ynt" id="ehC-xy-svT"/>
+                        <outletCollection property="loopRecordViewPassiveConstraints" destination="rvY-3n-7Jt" collectionClass="NSMutableArray" id="mwK-xD-VlZ"/>
+                        <outletCollection property="loopRecordViewPassiveConstraints" destination="Lb9-qr-hGf" collectionClass="NSMutableArray" id="j1Y-8e-vLP"/>
+                        <outletCollection property="loopRecordViewPassiveConstraints" destination="ozm-4w-9sU" collectionClass="NSMutableArray" id="XtY-4N-reU"/>
+                        <outletCollection property="loopRecordViewPassiveConstraints" destination="amh-RW-yNN" collectionClass="NSMutableArray" id="lgb-4M-U47"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4250" y="-1478"/>
+        </scene>
+    </scenes>
+</document>
