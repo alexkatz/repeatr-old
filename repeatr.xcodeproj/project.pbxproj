@@ -170,7 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				3B182B6A1EFEB1E000835924 /* Default-568h@2x.png */,
-				3BE5DDAD1C9E314C00574670 /* Repeatr */,
+				3BE5DDAD1C9E314C00574670 /* repeatr */,
 				3BE5DDAC1C9E314C00574670 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -183,7 +183,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3BE5DDAD1C9E314C00574670 /* Repeatr */ = {
+		3BE5DDAD1C9E314C00574670 /* repeatr */ = {
 			isa = PBXGroup;
 			children = (
 				3BE5DDBA1C9E314C00574670 /* Info.plist */,
@@ -200,8 +200,7 @@
 				3BE5DDC01C9F56D100574670 /* ViewControllers */,
 				3BE5DDC11C9F572A00574670 /* Views */,
 			);
-			name = Repeatr;
-			path = SampleCity;
+			path = repeatr;
 			sourceTree = "<group>";
 		};
 		3BE5DDC01C9F56D100574670 /* ViewControllers */ = {
@@ -247,7 +246,7 @@
 			dependencies = (
 			);
 			name = repeatr;
-			productName = SampleCity;
+			productName = repeatr;
 			productReference = 3BE5DDAB1C9E314C00574670 /* repeatr.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -458,7 +457,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = SampleCity/Info.plist;
+				INFOPLIST_FILE = repeatr/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alexkatz.repeatr;
@@ -475,7 +474,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = SampleCity/Info.plist;
+				INFOPLIST_FILE = repeatr/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.alexkatz.repeatr;
