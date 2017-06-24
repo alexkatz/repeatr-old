@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3B0D3DBB1CCE62AB00EF8D0C /* CreateTrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0D3DBA1CCE62AB00EF8D0C /* CreateTrackView.swift */; };
+		3B182B6B1EFEB1E000835924 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3B182B6A1EFEB1E000835924 /* Default-568h@2x.png */; };
 		3B1DE0351CB2911900682689 /* WaveformCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE0341CB2911900682689 /* WaveformCollectionViewLayout.swift */; };
 		3B1DE0381CB3126500682689 /* LoopPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE0371CB3126500682689 /* LoopPoint.swift */; };
 		3B1DE03A1CB3134E00682689 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DE0391CB3134E00682689 /* Track.swift */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		3B0D3DBA1CCE62AB00EF8D0C /* CreateTrackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateTrackView.swift; sourceTree = "<group>"; };
+		3B182B6A1EFEB1E000835924 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3B1DE0341CB2911900682689 /* WaveformCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaveformCollectionViewLayout.swift; sourceTree = "<group>"; };
 		3B1DE0371CB3126500682689 /* LoopPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPoint.swift; sourceTree = "<group>"; };
 		3B1DE0391CB3134E00682689 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
@@ -80,7 +82,7 @@
 		3BAF48111CADB62E009ADA6E /* LoopPlaybackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopPlaybackView.swift; sourceTree = "<group>"; };
 		3BB8C5A41DAD883500427528 /* LoopRecordCancelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoopRecordCancelView.swift; sourceTree = "<group>"; };
 		3BE35EF21CCD95DF00AC825C /* TracksCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TracksCollectionViewLayout.swift; sourceTree = "<group>"; };
-		3BE5DDAB1C9E314C00574670 /* Repeatr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Repeatr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BE5DDAB1C9E314C00574670 /* repeatr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = repeatr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BE5DDAE1C9E314C00574670 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BE5DDB01C9E314C00574670 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		3BE5DDB31C9E314C00574670 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 		3BE5DDA21C9E314C00574670 = {
 			isa = PBXGroup;
 			children = (
+				3B182B6A1EFEB1E000835924 /* Default-568h@2x.png */,
 				3BE5DDAD1C9E314C00574670 /* Repeatr */,
 				3BE5DDAC1C9E314C00574670 /* Products */,
 			);
@@ -175,7 +178,7 @@
 		3BE5DDAC1C9E314C00574670 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3BE5DDAB1C9E314C00574670 /* Repeatr.app */,
+				3BE5DDAB1C9E314C00574670 /* repeatr.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -231,9 +234,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3BE5DDAA1C9E314C00574670 /* Repeatr */ = {
+		3BE5DDAA1C9E314C00574670 /* repeatr */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3BE5DDBD1C9E314C00574670 /* Build configuration list for PBXNativeTarget "Repeatr" */;
+			buildConfigurationList = 3BE5DDBD1C9E314C00574670 /* Build configuration list for PBXNativeTarget "repeatr" */;
 			buildPhases = (
 				3BE5DDA71C9E314C00574670 /* Sources */,
 				3BE5DDA81C9E314C00574670 /* Frameworks */,
@@ -243,9 +246,9 @@
 			);
 			dependencies = (
 			);
-			name = Repeatr;
+			name = repeatr;
 			productName = SampleCity;
-			productReference = 3BE5DDAB1C9E314C00574670 /* Repeatr.app */;
+			productReference = 3BE5DDAB1C9E314C00574670 /* repeatr.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -265,7 +268,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3BE5DDA61C9E314C00574670 /* Build configuration list for PBXProject "Repeatr" */;
+			buildConfigurationList = 3BE5DDA61C9E314C00574670 /* Build configuration list for PBXProject "repeatr" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -278,7 +281,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3BE5DDAA1C9E314C00574670 /* Repeatr */,
+				3BE5DDAA1C9E314C00574670 /* repeatr */,
 			);
 		};
 /* End PBXProject section */
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BE5DDB91C9E314C00574670 /* LaunchScreen.storyboard in Resources */,
+				3B182B6B1EFEB1E000835924 /* Default-568h@2x.png in Resources */,
 				3BE5DDB61C9E314C00574670 /* Assets.xcassets in Resources */,
 				3BE5DDB41C9E314C00574670 /* Main.storyboard in Resources */,
 			);
@@ -484,7 +488,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3BE5DDA61C9E314C00574670 /* Build configuration list for PBXProject "Repeatr" */ = {
+		3BE5DDA61C9E314C00574670 /* Build configuration list for PBXProject "repeatr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3BE5DDBB1C9E314C00574670 /* Debug */,
@@ -493,7 +497,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3BE5DDBD1C9E314C00574670 /* Build configuration list for PBXNativeTarget "Repeatr" */ = {
+		3BE5DDBD1C9E314C00574670 /* Build configuration list for PBXNativeTarget "repeatr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3BE5DDBE1C9E314C00574670 /* Debug */,
