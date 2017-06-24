@@ -14,7 +14,7 @@ class TrackAccessView: ControlLabelView {
   
   override func setup() {
     self.enabled = true
-    self.label.text = "MIX"
+    self.label.text = "MORE"
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

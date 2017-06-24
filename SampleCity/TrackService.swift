@@ -51,7 +51,6 @@ class TrackService: NSObject, AVAudioRecorderDelegate {
   var isPlayingLoop = false {
     didSet {
       self.loopPlaybackDelegate?.isPlayingLoop = self.isPlayingLoop
-      self.recordDelegate?.enabled = !self.isPlayingLoop
     }
   }
   

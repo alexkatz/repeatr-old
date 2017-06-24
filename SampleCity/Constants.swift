@@ -34,5 +34,7 @@ class Constants {
   static let notificationLoopRecordArmed = "notificationLoopArmed"
   static let notificationEndLoopRecord = "notificationEndLoopRecord"
   static let notificationDestroyTrack = "notificationDestroyTrack"
+  
   static let trackServiceUUIDKey = "trackServiceUUIDKey"
+  
 }

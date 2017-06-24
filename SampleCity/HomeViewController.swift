@@ -16,6 +16,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
   private var collectionViewOffset: CGPoint?
   private var selectedTrack: Track?
   private var didInitialize: Bool = false
+  private var shouldAddTrackOnDidEndDecelerating: Bool = false
   private var armedCellY: CGFloat?
   private var currentCollectionViewOffset: CGPoint = CGPoint.zero
   
@@ -160,7 +161,7 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
   }
   
-  func onLoopRecordArmed(_ notification: Notification) {
+  @objc func onLoopRecordArmed(_ notification: Notification) {
     DispatchQueue.main.async {
       for cell in self.visibleCells() {
         if let track = cell.track, track.trackService.isArmedForLoopRecord {
@@ -296,18 +297,24 @@ class HomeViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
   }
   
-  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-    if scrollView.contentOffset.y < -50 {
-      self.createTrack()
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let yOffset = scrollView.contentOffset.y
+    if yOffset < 0 {
+      // center the text or whatever here, transform it with spring animation or something funky and kewl dawg
     }
   }
   
-  func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    for cell in self.visibleCells() {
-      if cell.selectedForLoopRecord {
-        print(self.collectionView.convert(cell.frame, to: self.view).origin.y)
-        break
-      }
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    
+    if scrollView.contentOffset.y < -100 {
+      self.shouldAddTrackOnDidEndDecelerating = true
+    }
+  }
+  
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    if self.shouldAddTrackOnDidEndDecelerating {
+      self.createTrack()
+      self.shouldAddTrackOnDidEndDecelerating = false
     }
   }
   
